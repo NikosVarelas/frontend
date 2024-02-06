@@ -19,12 +19,12 @@ const Carousel = () => {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable onPress={() => router.push(`/(recipe)/${item.id}`)}>
+          <TouchableOpacity onPress={() => router.push(`/(recipe)/${item.id}`)}>
             <View style={styles.item}>
               <Image source={item.image} style={styles.image}/>
               <Text>{item.text}</Text>
             </View>
-          </Pressable>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
-    marginBottom: 250
+    marginBottom: 100
   },
   list: {
     marginBottom: 100

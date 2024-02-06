@@ -26,7 +26,7 @@ const NewRecipeForm = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImage(result.uri);
     }
   };
@@ -48,10 +48,12 @@ const NewRecipeForm = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-      <Button title="Pick an Image" onPress={pickImage} />
+      <View style={styles.imageContainer}>
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <Button title="Pick an Image" onPress={pickImage} />
+      </View>
 
-      <Text style={styles.label}>Recipe Name:</Text>
+      <Text style={styles.label}>Recipe Name</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter recipe name"
@@ -59,30 +61,34 @@ const NewRecipeForm = () => {
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>Recipe Description:</Text>
+      <Text style={styles.label}>Recipe Description</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, styles.multilineInput]}
         placeholder="Enter recipe description"
         value={description}
         onChangeText={setDescription}
         multiline
       />
 
-      <Text style={styles.label}>Ingredients:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter ingredient"
-        value={ingredient}
-        onChangeText={setIngredient}
-      />
-      <Button title="Add Ingredient" onPress={handleAddIngredient} />
+      <Text style={styles.label}>Ingredients</Text>
+      <View style={styles.ingredientInputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter ingredient"
+          value={ingredient}
+          onChangeText={setIngredient}
+        />
+        <Button title="Add Ingredient" onPress={handleAddIngredient} />
+      </View>
 
-      <Text style={styles.label}>Ingredient List:</Text>
-      {ingredients.map((item, index) => (
-        <Text key={index} style={styles.ingredientItem}>
-          {item}
-        </Text>
-      ))}
+      <Text style={styles.label}>Ingredient List</Text>
+      <ScrollView style={styles.ingredientListContainer}>
+        {ingredients.map((item, index) => (
+          <Text key={index} style={styles.ingredientItem}>
+            {item}
+          </Text>
+        ))}
+      </ScrollView>
 
       <Button title="Submit Recipe" onPress={handleSubmit} />
     </ScrollView>
@@ -91,29 +97,47 @@ const NewRecipeForm = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
+    backgroundColor: '#fff',
   },
   label: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 16,
-    padding: 8,
+    paddingHorizontal: 8,
+    borderRadius: 4,
   },
-  ingredientItem: {
-    fontSize: 14,
-    marginBottom: 8,
+  multilineInput: {
+    height: 80,
+  },
+  imageContainer: {
+    marginBottom: 16,
   },
   image: {
     width: '100%',
     height: 200,
     resizeMode: 'cover',
+    borderRadius: 8,
+  },
+  ingredientInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  ingredientListContainer: {
+    maxHeight: 120,
+    marginBottom: 16,
+  },
+  ingredientItem: {
+    fontSize: 16,
+    marginBottom: 8,
   },
 });
 

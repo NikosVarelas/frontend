@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
@@ -14,10 +14,10 @@ const Page = () => {
   return (
     <View>
       <Text>Recipe: {id}</Text>
-      <Pressable style={styles.button} onPress={() => handleAddtoBasket(id)}>
+      <TouchableOpacity style={styles.button} onPress={() => handleAddtoBasket(id)}>
         <FontAwesome name="shopping-basket" size={20} color="#fff" style={styles.icon} />
         <Text style={styles.buttonText}> Add to basket</Text>
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // Align icon and text horizontally
     alignItems: 'center', // Center items vertically
     margin: 10,
+    marginTop: 100
   },
   buttonText: {
     color: '#fff',

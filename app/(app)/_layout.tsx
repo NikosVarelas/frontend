@@ -25,36 +25,52 @@ export default function AppLayout() {
     <Drawer>
         <Drawer.Screen name='index' options={{
             drawerIcon: () => (
-                <Ionicons name='home'/>
+                <Ionicons name='home' size={20}/>
             ),
             headerTitle: "Home",
-            title: "Home"
+            title: "Home",
+            headerTintColor: 'black',
+            headerStyle: {
+                backgroundColor: 'green',
+            },
         }} />
         <Drawer.Screen name='create-recipe' options={{
             headerTitle: "Create new recipe",
             title: "Create new recipe",
+            headerTintColor: 'black',
+            headerStyle: {
+                backgroundColor: 'green',
+            },
             drawerIcon: () => (
-                <Ionicons name='add' />
+                <Ionicons name='add' size={20}/>
             )
         }}/>
         <Drawer.Screen name='settings' options={{
             headerTitle: "Settings",
             title: "Settings",
+            headerTintColor: 'black',
+            headerStyle: {
+                backgroundColor: 'green',
+            },
             drawerIcon: () => (
-                <Ionicons name='settings' />
+                <Ionicons name='settings' size={20} />
             )
         }}/>
         <Drawer.Screen name='shopping-list' options={{
             headerTitle: "Shopping List",
             title: "Shopping List",
             drawerIcon: () => (
-                <Ionicons name='basket' />
+                <Ionicons name='basket' size={20} />
             )
         }}/>
         <Drawer.Screen name='(recipe)'
               options={{
                 drawerItemStyle: { height: 0 },
-                headerShown: false
+                headerShown: false,
+                headerTintColor: 'black',
+                headerStyle: {
+                    backgroundColor: 'green',
+                },
         }}/>
     </Drawer>
   )
