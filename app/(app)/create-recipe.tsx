@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native'; // Import ActivityIndicator
 import * as ImagePicker from 'expo-image-picker';
+import { RecipeClient } from '@/clients/recipe-client';
+import { useSession } from '@/context/ctx';
+import { Recipe, Ingredient } from '@/clients/recipe-client';
+import { axiosRequest } from '@/constants/axiosRequest';
+import { endpoints } from '@/constants/endpoint';
+import { router } from 'expo-router';
 
 const NewRecipeForm = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [ingredient, setIngredient] = useState('');
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [image, setImage] = useState(null);
+  const { token } = useSession();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -26,24 +35,41 @@ const NewRecipeForm = () => {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImage(result.uri);
     }
   };
 
   const handleAddIngredient = () => {
     if (ingredient.trim() !== '') {
-      setIngredients([...ingredients, ingredient]);
+      const ingrQuanitity: Ingredient = {
+        name: ingredient,
+        quantity: "test",
+        quantity_type: "test"
+      }
+      setIngredients([...ingredients, ingrQuanitity]);
       setIngredient('');
     }
   };
 
-  const handleSubmit = () => {
-    // Add your logic to handle the submission of the new recipe
-    console.log('Recipe Name:', name);
-    console.log('Recipe Description:', description);
-    console.log('Recipe Ingredients:', ingredients);
-    console.log('Recipe Image:', image);
+  const handleSubmit = async () => {
+    setLoading(true);
+    const requestData = {
+      "name": name,
+      "description": description,
+      "image_url": "test",
+      "ingredients": ingredients
+    }
+    const [_, err] = await axiosRequest('POST', token, endpoints.createRecipe, requestData)
+    if (err) {
+      console.log(err)
+      setError(err)
+    }
+    setLoading(false);
+    router.push('/(app)');
+    setName('')
+    setDescription('')
+    setIngredients([])
   };
 
   return (
@@ -85,12 +111,19 @@ const NewRecipeForm = () => {
       <ScrollView style={styles.ingredientListContainer}>
         {ingredients.map((item, index) => (
           <Text key={index} style={styles.ingredientItem}>
-            {item}
+            {item.name}: {item.quantity} {item.quantity_type}
           </Text>
         ))}
       </ScrollView>
 
       <Button title="Submit Recipe" onPress={handleSubmit} />
+
+      {/* Loading indicator */}
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -138,6 +171,11 @@ const styles = StyleSheet.create({
   ingredientItem: {
     fontSize: 16,
     marginBottom: 8,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

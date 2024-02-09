@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Text, View, TextInput, ActivityIndicator, StyleSheet, StatusBar, TouchableOpacity, Image } from 'react-native';
-import CustomButton from '@/components/CustomButton';  // Make sure this path is correct
 import { useSession } from '@/context/ctx';
 import { router } from 'expo-router';
 
@@ -9,11 +8,11 @@ export default function SignIn() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSignIn = async (username: string, password: string) => {
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       await signIn(username, password); 
 
       setUsername('');
@@ -22,13 +21,13 @@ export default function SignIn() {
 
       router.replace('/(app)')
     } catch (error) {
-      if (error.message == String) {
+      if (typeof error.message === 'string') {
         setErrorMessage(error.message)
       } else {
         setErrorMessage("An error occured")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   };
 
@@ -56,13 +55,17 @@ export default function SignIn() {
           onChangeText={(password) => setPassword(password)}
         /> 
       </View> 
+      {isLoading && <ActivityIndicator size="large" color="#006400" />}
+      {!isLoading && 
       <TouchableOpacity>
         <Text style={styles.forgot_button}>Forgot Password?</Text> 
-      </TouchableOpacity> 
-      <TouchableOpacity style={styles.loginBtn} onPress={() => handleSignIn(username, password)}>
+      </TouchableOpacity>}
+      <TouchableOpacity 
+        style={[styles.loginBtn, isLoading && styles.disabledButton]} 
+        onPress={() => handleSignIn(username, password)}
+        disabled={isLoading}>
         <Text>LOGIN</Text>
       </TouchableOpacity>
-
     </View> 
   );
 }
@@ -107,4 +110,8 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 16,
   },
+  disabledButton: {
+    opacity: 0.5,
+    backgroundColor: 'gray',
+  }
 });

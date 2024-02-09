@@ -1,22 +1,24 @@
 import { Redirect, Stack } from 'expo-router';
-import { Text } from 'react-native'
+import { ActivityIndicator, Text } from 'react-native'
+import { View } from 'react-native'
 
 import { useSession } from '@/context/ctx';
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
 
 
-
 export default function AppLayout() {
-  const { token, isLoading } = useSession();
+  const {isLoading,  user, isUserLoading, token } = useSession();
 
-    
-  console.log(isLoading)
-  if (isLoading) {
-    return <Text>Loading...</Text>;
+  if (isUserLoading) {
+    return (
+        <View>
+            <ActivityIndicator size="large" color="#006400" />
+        </View>
+    )
   }
 
-  if (!token) {
+  if (!user && !isLoading) {
     return <Redirect href="/sign-in" />;
   }
 
