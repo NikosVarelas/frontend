@@ -9,9 +9,9 @@ import { endpoints } from '@/constants/endpoint';
 import { router } from 'expo-router';
 
 const NewRecipeForm = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [ingredient, setIngredient] = useState('');
+  const [name, setName] = useState<string | null>(null);
+  const [description, setDescription] = useState<string | null>(null);
+  const [ingredient, setIngredient] = useState<string | null>(null);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [image, setImage] = useState(null);
   const { token } = useSession();
@@ -41,20 +41,20 @@ const NewRecipeForm = () => {
   };
 
   const handleAddIngredient = () => {
-    if (ingredient.trim() !== '') {
+    if (ingredient) {
       const ingrQuanitity: Ingredient = {
         name: ingredient,
         quantity: "test",
         quantity_type: "test"
       }
       setIngredients([...ingredients, ingrQuanitity]);
-      setIngredient('');
+      setIngredient(null);
     }
   };
 
   const handleSubmit = async () => {
     setLoading(true);
-    const requestData = {
+    const requestData: Recipe = {
       "name": name,
       "description": description,
       "image_url": "test",
@@ -64,12 +64,13 @@ const NewRecipeForm = () => {
     if (err) {
       console.log(err)
       setError(err)
+    } else {
+        router.push('/(app)');
+        setName('')
+        setDescription('')
+        setIngredients([])
     }
     setLoading(false);
-    router.push('/(app)');
-    setName('')
-    setDescription('')
-    setIngredients([])
   };
 
   return (

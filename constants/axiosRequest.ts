@@ -1,7 +1,7 @@
 
 import axios from "axios";
 
-const postRequest = async (token: string, data: any, url: string): Promise<any> => {
+const postRequest = async (token: string, data: any, url: string): Promise<[any, string | null]> => {
     const headers = {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -12,9 +12,9 @@ const postRequest = async (token: string, data: any, url: string): Promise<any> 
         return [response.data, null];
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
-            [null , error.response.data.detail]
+            return [null, error.response.data.detail];
         } else {
-            [null, "An error occurred"];
+            return [null, "An error occurred"];
         }
     }
 };
