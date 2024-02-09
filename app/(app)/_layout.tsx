@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 export default function AppLayout() {
-  const {isLoading,  user, isUserLoading, token } = useSession();
+  const {isLoading,  user, isUserLoading } = useSession();
 
   if (isUserLoading) {
     return (

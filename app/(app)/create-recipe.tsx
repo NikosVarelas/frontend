@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native'; // Import ActivityIndicator
 import * as ImagePicker from 'expo-image-picker';
-import { RecipeClient } from '@/clients/recipe-client';
 import { useSession } from '@/context/ctx';
 import { Recipe, Ingredient } from '@/clients/recipe-client';
 import { axiosRequest } from '@/constants/axiosRequest';
@@ -53,6 +52,7 @@ const NewRecipeForm = () => {
   };
 
   const handleSubmit = async () => {
+    if (name && ingredients.length > 0) {
     setLoading(true);
     const requestData: Recipe = {
       "name": name,
@@ -71,6 +71,14 @@ const NewRecipeForm = () => {
         setIngredients([])
     }
     setLoading(false);
+    } else {
+        if (!name) {
+            alert("Name can't be empty!")
+        } else {
+            alert("Please specify ingredients!")
+        }
+    }
+
   };
 
   return (

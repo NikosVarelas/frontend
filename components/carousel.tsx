@@ -3,26 +3,20 @@ import { View, Text, FlatList, StyleSheet, Image, Pressable } from 'react-native
 import { TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 
-const Carousel = () => {
-  const data = [
-    { id: '1', image: require('./images/image1.jpg'), text: 'Item 1' },
-    { id: '2', image: require('./images/image2.jpg'), text: 'Item 2' },
-    { id: '3', image: require('./images/image3.jpg'), text: 'Item 3' },
-    // Add more items as needed
-  ];
+const Carousel = (props) => {
 
   return (
     <View style={styles.container}>
       <FlatList style={styles.list}
-        data={data}
+        data={props.data}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => router.push(`/(recipe)/${item.id}`)}>
             <View style={styles.item}>
-              <Image source={item.image} style={styles.image}/>
-              <Text>{item.text}</Text>
+              {/* <Image source={item.name} style={styles.image}/> */}
+              <Text>{item.name}</Text>
             </View>
           </TouchableOpacity>
         )}

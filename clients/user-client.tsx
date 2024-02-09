@@ -22,7 +22,6 @@ const getUser = async (token: string):  Promise<User> => {
         recipes: response.data.recipes,
         isActive: response.data.is_active
         }
-        console.log(userData)
     return userData
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {

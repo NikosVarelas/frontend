@@ -17,8 +17,6 @@ const logIn = async (username: string, password: string): Promise<AuthData> => {
       token: response.data.access_token,
     };
 
-    console.log(authData)
-
     return authData;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

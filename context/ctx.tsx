@@ -42,7 +42,6 @@ export function SessionProvider(props: React.PropsWithChildren) {
       if (token) {
         try {
             setIsUserLoading(true)
-            console.log(token)
           const userData = await UserClient.getUser(token);
           setUser(userData);
         } catch (error) {
