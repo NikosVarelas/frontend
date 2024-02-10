@@ -7,16 +7,7 @@ export default function Page() {
 
     return (
         <View>
-            <CustomButton
-                title="Press me"
-                onPress={() => setIsPressed(true)}
-            />
-            {isPressed && (
-                <Image
-                    style={styles.image}
-                    source={require('../../assets/images/georgia.jpeg')} 
-                />
-            )}
+            Settings
         </View>
     )
 }
