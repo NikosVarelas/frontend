@@ -7,7 +7,7 @@ export default function Page() {
 
     return (
         <View>
-            Settings
+            <Text>Settings</Text>
         </View>
     )
 }
