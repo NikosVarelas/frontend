@@ -1,7 +1,9 @@
-import { Redirect, Stack } from 'expo-router';
-import { ActivityIndicator, Text } from 'react-native'
+import { Redirect } from 'expo-router';
+import { ActivityIndicator } from 'react-native'
 import { View } from 'react-native'
+import { Provider } from 'react-redux'
 
+import store from '@/store';
 import { useSession } from '@/context/ctx';
 import { Drawer } from 'expo-router/drawer';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,8 +24,8 @@ export default function AppLayout() {
     return <Redirect href="/sign-in" />;
   }
 
-  // This layout can be deferred because it's not the root layout.
   return (
+    <Provider store={store}>
     <Drawer>
         <Drawer.Screen name='index' options={{
             drawerIcon: () => (
@@ -75,5 +77,6 @@ export default function AppLayout() {
                 },
         }}/>
     </Drawer>
+    </Provider>
   )
 }

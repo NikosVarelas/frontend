@@ -12,11 +12,6 @@ const Layout = () => {
                         <Ionicons name="chevron-back" size={26} />
                     </Pressable>
                 ),
-                headerRight: () => (
-                    <Pressable onPress={() => router.push('/[id_edit]')}>
-                        <Ionicons name="pencil" size={26} />
-                    </Pressable>
-                ),
                 headerStyle: {
                     backgroundColor: 'green',
                 },

@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#3498db',
     padding: 10,
     borderRadius: 5,
-    flexDirection: 'row', // Align icon and text horizontally
-    alignItems: 'center', // Center items vertically
+    flexDirection: 'row',
+    alignItems: 'center',
     margin: 10,
     marginTop: 100
   },
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   icon: {
-    marginRight: 5, // Add spacing between the icon and text
+    marginRight: 5,
   },
 });
 
