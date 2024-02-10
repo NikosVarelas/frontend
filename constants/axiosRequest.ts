@@ -37,11 +37,31 @@ const getRequest = async (token: string, url: string): Promise<any> => {
     }
 };
 
+const deleteRequest = async (token: string, url: string): Promise<[any, string | null]> => {
+    const headers = {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+
+    try {
+        const response = await axios.delete(url, { headers: headers });
+        return [response.data, null];
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            return [null, error.response.data.detail];
+        } else {
+            return [null, "An error occurred"];
+        }
+    }
+};
+
 export const axiosRequest = async (method: string, token: string, url: string, data = null): Promise<any> => {
     if (method === 'POST') {
         return postRequest(token, data, url);
     } else if (method === 'GET') {
         return getRequest(token, url);
+    } else if (method === 'DELETE') {
+        return deleteRequest(token, url);
     } else {
         throw new Error('Unsupported HTTP method');
     }

@@ -19,4 +19,5 @@ export const endpoints = {
     createRecipe: "http://localhost:8000/v1/recipe/add",
     getRecipe: "http://localhost:8000/v1/recipe",
     getAllRecipes: "http://localhost:8000/v1/recipe/recipes",
+    deleteRecipe: "http://localhost:8000/v1/recipe/delete"
 }
