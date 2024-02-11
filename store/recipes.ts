@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
-import { type Recipe } from '@/clients/recipe-client'
+import { type Recipe } from '@/models/Recipe'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 import { type Dispatch } from 'redux'
@@ -14,8 +14,8 @@ const recipesSlice = createSlice({
       state.push(action.payload)
     },
     delete(state, action: PayloadAction<number>) {
-        return state.filter(recipe => recipe.id !== action.payload)
-      },
+      return state.filter((recipe) => recipe.id !== action.payload)
+    },
     edit(state) {},
     replace(state, action) {
       return action.payload
@@ -52,19 +52,15 @@ export const createRecipe = (token: string | null, data: Recipe) => {
 }
 
 export const deleteRecipe = (token: string | null, id: number) => {
-    return async (dispatch: Dispatch<any>) => {
-      try {
-        await axiosRequest(
-            'DELETE',
-            token,
-            endpoints.deleteRecipe + `/${id}`
-          )
-        dispatch(recipesSlice.actions.delete(id))
-      } catch (error) {
-        throw new Error(error)
-      }
+  return async (dispatch: Dispatch<any>) => {
+    try {
+      await axiosRequest('DELETE', token, endpoints.deleteRecipe + `/${id}`)
+      dispatch(recipesSlice.actions.delete(id))
+    } catch (error) {
+      throw new Error(error)
     }
   }
+}
 
 export const recipesActions = recipesSlice.actions
 export default recipesSlice

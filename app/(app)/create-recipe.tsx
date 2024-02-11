@@ -12,12 +12,12 @@ import {
 } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { useSession } from '@/context/ctx'
-import { type Recipe, type Ingredient } from '@/clients/recipe-client'
+import { type Recipe, type Ingredient } from '@/models/Recipe'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 import { router } from 'expo-router'
 import { createRecipe } from '@/store/recipes'
-import {useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { type Dispatch } from 'redux'
 
 const NewRecipeForm = (): JSX.Element => {
@@ -71,7 +71,7 @@ const NewRecipeForm = (): JSX.Element => {
       const requestData: Recipe = {
         name,
         description,
-        image_url: "test",
+        image_url: 'test',
         ingredients,
       }
       try {

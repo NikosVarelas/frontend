@@ -19,28 +19,29 @@ export default function SignIn(): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = async (username: string, password: string): Promise<void> => {
+  const handleSignIn = async (
+    username: string,
+    password: string
+  ): Promise<void> => {
+    if (username.length !== 0 && password.length !== 0) {
     try {
+      setErrorMessage('')
       setIsLoading(true)
       await signIn(username, password)
 
       setUsername('')
       setPassword('')
       setErrorMessage('')
-      console.log('here')
-      console.log(isLoading)
-
       router.replace('/(app)')
     } catch (error) {
-      if (typeof error.message === 'string') {
-        setErrorMessage(error.message)
-      } else {
-        setErrorMessage('An error occured')
-      }
+      setErrorMessage(error.message)
     } finally {
       setIsLoading(false)
     }
+  } else {
+    setErrorMessage('Please fill in your username and password!')
   }
+}
 
   return (
     <View style={styles.container}>

@@ -1,6 +1,8 @@
 import React from 'react'
 import { useStorageState } from '@/storage/local-storage'
-import { authClient } from '@/clients/auth-client'
+import { axiosRequest } from '@/constants/axiosRequest'
+import { endpoints } from '@/constants/endpoint'
+import { type AuthData } from '@/models/AuthData'
 
 const AuthContext = React.createContext<{
   signIn: (username: string, password: string) => Promise<void>
@@ -33,8 +35,16 @@ export function SessionProvider(
     <AuthContext.Provider
       value={{
         signIn: async (username: string, password: string): Promise<void> => {
-          const authData = await authClient.logIn(username, password)
-          setSession(authData.token)
+          const data = new FormData()
+          data.append('username', username)
+          data.append('password', password)
+          const authData: AuthData = await axiosRequest(
+            'POST',
+            token,
+            endpoints.authLoginAccessToken,
+            data
+          )
+          setSession(authData.access_token)
         },
         signOut: (): void => {
           setSession(null)

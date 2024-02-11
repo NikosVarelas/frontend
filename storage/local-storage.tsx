@@ -15,7 +15,10 @@ function useAsyncState<T>(
   ) as UseStateHook<T>
 }
 
-export async function setStorageItemAsync(key: string, value: string | null) {
+export async function setStorageItemAsync(
+  key: string,
+  value: string | null
+): Promise<void> {
   if (value == null) {
     await SecureStore.deleteItemAsync(key)
   } else {
@@ -24,17 +27,14 @@ export async function setStorageItemAsync(key: string, value: string | null) {
 }
 
 export function useStorageState(key: string): UseStateHook<string> {
-  // Public
   const [state, setState] = useAsyncState<string>()
 
-  // Get
   React.useEffect(() => {
     void SecureStore.getItemAsync(key).then((value) => {
       setState(value)
     })
   }, [key])
 
-  // Set
   const setValue = React.useCallback(
     (value: string | null) => {
       setState(value)

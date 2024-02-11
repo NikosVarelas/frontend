@@ -1,10 +1,13 @@
-export interface Recipe {
-  description: string
-  id: number
-  image_url: string
-  ingredients: Array<{
-    name: string
-    quantity: string
-  }>
+export interface Ingredient {
   name: string
+  quantity: string
+  quantity_type: string
+}
+
+export interface Recipe {
+  id: number | null
+  name: string
+  description: string | null
+  image_url: string | null
+  ingredients: Ingredient[]
 }
