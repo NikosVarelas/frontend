@@ -9,12 +9,12 @@ const postRequest = async (token: string, data: any, url: string): Promise<[any,
 
     try {
         const response = await axios.post(url, data, { headers: headers });
-        return [response.data, null];
+        return response.data
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
-            return [null, error.response.data.detail];
+            throw new Error(error.response.data.detail)
         } else {
-            return [null, "An error occurred"];
+            throw new Error('An error occured')
         }
     }
 };
@@ -30,14 +30,14 @@ const getRequest = async (token: string, url: string): Promise<any> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
-            [null , error.response.data.detail]
+            throw new Error(error.response.data.detail)
         } else {
-            [null, "An error occurred"];
+            throw new Error('An error occured')
         }
     }
 };
 
-const deleteRequest = async (token: string, url: string): Promise<[any, string | null]> => {
+const deleteRequest = async (token: string, url: string): Promise<any> => {
     const headers = {
         'Accept': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -45,12 +45,12 @@ const deleteRequest = async (token: string, url: string): Promise<[any, string |
 
     try {
         const response = await axios.delete(url, { headers: headers });
-        return [response.data, null];
+        return response.data
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
-            return [null, error.response.data.detail];
+            throw new Error(error.response.data.detail)
         } else {
-            return [null, "An error occurred"];
+            throw new Error('An error occured')
         }
     }
 };

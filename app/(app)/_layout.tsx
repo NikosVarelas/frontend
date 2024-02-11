@@ -10,9 +10,9 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 export default function AppLayout() {
-  const {isLoading,  user, isUserLoading } = useSession();
+  const {isLoading, token } = useSession();
 
-  if (isUserLoading) {
+  if (isLoading) {
     return (
         <View>
             <ActivityIndicator size="large" color="#006400" />
@@ -20,7 +20,7 @@ export default function AppLayout() {
     )
   }
 
-  if (!user && !isLoading) {
+  if (!token && !isLoading) {
     return <Redirect href="/sign-in" />;
   }
 

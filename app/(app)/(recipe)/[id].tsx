@@ -16,11 +16,12 @@ const Page = () => {
   };
 
   const handleDeleteRecipeYes = async (id: string) => {
-        const [_, err] = await axiosRequest('DELETE', token, endpoints.deleteRecipe + `/${id}`);
-        if (err) {
-            console.log(err);
+        try {
+        data = await axiosRequest('DELETE', token, endpoints.deleteRecipe + `/${id}`);
+        } catch (error) {
+            console.error("Something went wrong")
         }
-};
+        };
 
 
   const handleDeleteRecipe = (id: string) => {
