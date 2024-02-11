@@ -1,18 +1,27 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, TouchableOpacityProps } from 'react-native';
+import React from 'react'
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  type TouchableOpacityProps
+} from 'react-native'
 
 interface CustomButtonProps extends TouchableOpacityProps {
-  title: string;
-  onPress: () => void;
+  title: string
+  onPress: () => void
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, ...props }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({
+  title,
+  onPress,
+  ...props
+}) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress} {...props}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -25,8 +34,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
-  },
-});
+    fontSize: 16
+  }
+})
 
-export default CustomButton;
+export default CustomButton

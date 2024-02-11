@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, Image, ActivityIndicator } from 'react-native'; // Import ActivityIndicator
-import * as ImagePicker from 'expo-image-picker';
-import { useSession } from '@/context/ctx';
-import { Recipe, Ingredient } from '@/clients/recipe-client';
-import { axiosRequest } from '@/constants/axiosRequest';
-import { endpoints } from '@/constants/endpoint';
-import { router } from 'expo-router';
+import React, { useState, useEffect } from 'react'
+import { View, Text, TextInput, Button, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native'
+import * as ImagePicker from 'expo-image-picker'
+import { useSession } from '@/context/ctx'
+import { type Recipe, type Ingredient } from '@/clients/recipe-client'
+import { axiosRequest } from '@/constants/axiosRequest'
+import { endpoints } from '@/constants/endpoint'
+import { router } from 'expo-router'
 
 const NewRecipeForm = () => {
-  const [name, setName] = useState<string | null>(null);
-  const [description, setDescription] = useState<string | null>(null);
-  const [ingredient, setIngredient] = useState<string | null>(null);
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [ingredient, setIngredient] = useState<string>('');
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<string | null>(null);
   const { token } = useSession();
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -34,7 +34,7 @@ const NewRecipeForm = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.cancelled) {
       setImage(result.uri);
     }
   };
@@ -43,42 +43,44 @@ const NewRecipeForm = () => {
     if (ingredient) {
       const ingrQuanitity: Ingredient = {
         name: ingredient,
-        quantity: "test",
-        quantity_type: "test"
+        quantity: 'test',
+        quantity_type: 'test'
       }
-      setIngredients([...ingredients, ingrQuanitity]);
-      setIngredient(null);
+      setIngredients([...ingredients, ingrQuanitity])
+      setIngredient('')
     }
   };
 
   const handleSubmit = async () => {
     if (name && ingredients.length > 0) {
-    setLoading(true);
-    const requestData: Recipe = {
-      "name": name,
-      "description": description,
-      "image_url": "test",
-      "ingredients": ingredients
-    }
-    const [_, err] = await axiosRequest('POST', token, endpoints.createRecipe, requestData)
-    if (err) {
-      console.log(err)
-      setError(err)
-    } else {
-        router.push('/(app)');
-        setName('')
-        setDescription('')
-        setIngredients([])
-    }
-    setLoading(false);
-    } else {
-        if (!name) {
-            alert("Name can't be empty!")
-        } else {
-            alert("Please specify ingredients!")
+      setLoading(true)
+      const requestData: Recipe = {
+        name: name,
+        description: description,
+        image_url: image ? image : '',
+        ingredients: ingredients,
+      };
+      try {
+        const [data, err] = await axiosRequest('POST', token, endpoints.createRecipe, requestData)
+        if (err) {
+          throw new Error(err);
         }
+        router.push('/(app)');
+        setName('');
+        setDescription('');
+        setIngredients([]);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      if (!name) {
+        Alert.alert("Name can't be empty!");
+      } else {
+        Alert.alert('Please specify ingredients!');
+      }
     }
-
   };
 
   return (

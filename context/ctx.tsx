@@ -1,52 +1,49 @@
-import React from 'react';
-import { useStorageState } from '@/storage/local-storage';
-import { authClient } from '@/clients/auth-client';
-import { UserClient, User } from '@/clients/user-client';
-import { useState, useEffect } from 'react';
+import React from 'react'
+import { useStorageState } from '@/storage/local-storage'
+import { authClient } from '@/clients/auth-client'
 
 const AuthContext = React.createContext<{
-  signIn: (username: string, password: string) => void;
-  signOut: () => void;
-  token?: string | null;
-  isLoading: boolean;
+  signIn: (username: string, password: string) => Promise<void>
+  signOut: () => void
+  token?: string | null
+  isLoading: boolean
 }>({
-  signIn: (username: string, password: string) => null,
-  signOut: () => null,
+  signIn: async (username: string, password: string): Promise<void> => {},
+  signOut: () => {},
   token: null,
-  isLoading: false
-});
+  isLoading: false,
+})
 
-// This hook can be used to access the user info.
-export function useSession() {
-  const value = React.useContext(AuthContext);
-  if (process.env.NODE_ENV !== 'production') {
-    if (!value) {
-      throw new Error('useSession must be wrapped in a <SessionProvider />');
-    }
-  }
-
-  return value;
+export function useSession(): {
+  signIn: (username: string, password: string) => Promise<void>
+  signOut: () => void
+  token?: string | null
+  isLoading: boolean
+} {
+  const value = React.useContext(AuthContext)
+  return value
 }
 
-export function SessionProvider(props: React.PropsWithChildren) {
-  const [[isLoading, token], setSession] = useStorageState('token');
-
+export function SessionProvider(
+  props: React.PropsWithChildren<unknown>
+): JSX.Element {
+  const [[isLoading, token], setSession] = useStorageState('token')
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: async (username: string, password: string) => {
+        signIn: async (username: string, password: string): Promise<void> => {
           const authData = await authClient.logIn(username, password)
-          
-          setSession(authData.token);
+          setSession(authData.token)
         },
-        signOut: () => {
-          setSession(null);
+        signOut: (): void => {
+          setSession(null)
         },
         token,
-        isLoading
-      }}>
+        isLoading,
+      }}
+    >
       {props.children}
     </AuthContext.Provider>
-  );
+  )
 }

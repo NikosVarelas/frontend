@@ -1,19 +1,28 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, Pressable } from 'react-native';
-import { TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
+import React from 'react'
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native'
+import { router } from 'expo-router'
 
 const Carousel = (props) => {
-
   return (
     <View style={styles.container}>
-      <FlatList style={styles.list}
+      <FlatList
+        style={styles.list}
         data={props.data}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push(`/(recipe)/${item.id}`)}>
+          <TouchableOpacity
+            onPress={() => {
+              router.push(`/(recipe)/${item.id}`)
+            }}
+          >
             <View style={styles.item}>
               {/* <Image source={item.name} style={styles.image}/> */}
               <Text>{item.name}</Text>
@@ -22,8 +31,8 @@ const Carousel = (props) => {
         )}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -42,14 +51,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   image: {
     width: '100%',
     height: '80%', // Adjust the height based on your preference
     borderRadius: 10,
-    marginBottom: 5,
-  },
-});
+    marginBottom: 5
+  }
+})
 
-export default Carousel;
+export default Carousel

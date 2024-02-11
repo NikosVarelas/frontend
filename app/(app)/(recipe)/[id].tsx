@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
