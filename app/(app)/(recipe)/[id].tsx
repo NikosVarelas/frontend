@@ -2,38 +2,40 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
-import { axiosRequest } from '@/constants/axiosRequest'
 import { useSession } from '@/context/ctx'
-import { endpoints } from '@/constants/endpoint'
+import { useDispatch } from 'react-redux'
+import { type Dispatch } from 'redux'
+import { deleteRecipe } from '@/store/recipes'
 
 const Page = (): JSX.Element => {
   const { id } = useLocalSearchParams<{ id: string }>()
+  const recipeId = parseInt(id)
   const { token } = useSession()
+  const dispatch: Dispatch = useDispatch()
 
-  const handleAddtoBasket = (id: string): void => {
+  const handleAddtoBasket = (id: number): void => {
     console.log(`Added to basket recipe ${id}`)
   }
 
-  const handleDeleteRecipeYes = async (id: string): Promise<void> => {
+  const handleDeleteRecipeYes = async (id: number): Promise<void> => {
     try {
-      await axiosRequest(
-        'DELETE',
-        token,
-        endpoints.deleteRecipe + `/${id}`
-      )
+      await dispatch(deleteRecipe(token, recipeId))
+      router.push('/(app)')
     } catch (error) {
-      console.error('Something went wrong')
+      console.log(error)
     }
   }
 
-  const handleDeleteRecipe = (id: string): void => {
+  const handleDeleteRecipe = (id: number): void => {
     Alert.alert(
       'Confirm Deletion',
       'Are you sure you want to delete the recipe?',
       [
         {
           text: 'No',
-          onPress: () => { console.log('Cancel Pressed'); },
+          onPress: () => {
+            console.log('Cancel Pressed')
+          },
           style: 'cancel',
         },
         {
@@ -54,7 +56,9 @@ const Page = (): JSX.Element => {
       <Text>Recipe: {id}</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => { handleAddtoBasket(id); }}
+        onPress={() => {
+          handleAddtoBasket(recipeId)
+        }}
       >
         <FontAwesome
           name="shopping-basket"
@@ -66,7 +70,9 @@ const Page = (): JSX.Element => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => { handleDeleteRecipe(id); }}
+        onPress={() => {
+          handleDeleteRecipe(recipeId)
+        }}
       >
         <FontAwesome name="trash" size={20} color="#fff" style={styles.icon} />
         <Text style={styles.buttonText}> Delete recipe</Text>

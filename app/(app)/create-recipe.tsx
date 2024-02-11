@@ -16,6 +16,9 @@ import { type Recipe, type Ingredient } from '@/clients/recipe-client'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 import { router } from 'expo-router'
+import { createRecipe } from '@/store/recipes'
+import {useDispatch} from 'react-redux'
+import { type Dispatch } from 'redux'
 
 const NewRecipeForm = (): JSX.Element => {
   const [name, setName] = useState<string>('')
@@ -26,6 +29,7 @@ const NewRecipeForm = (): JSX.Element => {
   const { token } = useSession()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const dispatch: Dispatch = useDispatch()
 
   useEffect(() => {
     void (async () => {
@@ -67,13 +71,14 @@ const NewRecipeForm = (): JSX.Element => {
       const requestData: Recipe = {
         name,
         description,
-        image_url: image,
+        image_url: "test",
         ingredients,
       }
       try {
-        await axiosRequest('POST', token, endpoints.createRecipe, requestData)
+        dispatch(createRecipe(token, requestData))
         router.push('/(app)')
       } catch (error) {
+        console.log(error)
         setError(error)
       } finally {
         setLoading(false)
@@ -133,7 +138,7 @@ const NewRecipeForm = (): JSX.Element => {
         ))}
       </ScrollView>
 
-      <Button title="Submit Recipe" onPress={() => handleSubmit} />
+      <Button title="Submit Recipe" onPress={handleSubmit} />
 
       {/* Loading indicator */}
       {loading && (

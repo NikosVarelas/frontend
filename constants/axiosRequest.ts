@@ -15,6 +15,7 @@ const postRequest = async (
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response != null) {
+      console.log(error.response.data.detail)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       throw new Error(error.response.data.detail)
     } else {
@@ -68,7 +69,7 @@ export const axiosRequest = async (
   method: string,
   token: string | null,
   url: string,
-  data = null
+  data: any = null
 ): Promise<any> => {
   if (method === 'POST') {
     return await postRequest(token, data, url)
