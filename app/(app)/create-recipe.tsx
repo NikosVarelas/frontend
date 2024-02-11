@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, TextInput, Button, StyleSheet, ScrollView, Image, ActivityIndicator, Alert } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+  Image,
+  ActivityIndicator,
+  Alert,
+} from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { useSession } from '@/context/ctx'
 import { type Recipe, type Ingredient } from '@/clients/recipe-client'
@@ -7,87 +17,83 @@ import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 import { router } from 'expo-router'
 
-const NewRecipeForm = () => {
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [ingredient, setIngredient] = useState<string>('');
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-  const [image, setImage] = useState<string | null>(null);
-  const { token } = useSession();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+const NewRecipeForm = (): JSX.Element => {
+  const [name, setName] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [ingredient, setIngredient] = useState<string>('')
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
+  const [image, setImage] = useState<string | null>(null)
+  const { token } = useSession()
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    void (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
       if (status !== 'granted') {
-        console.log('Permission denied for accessing media library');
+        console.log('Permission denied for accessing media library')
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+  const pickImage = async (): Promise<void> => {
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-    });
+    })
 
-    if (!result.cancelled) {
-      setImage(result.uri);
+    if (!result.canceled) {
+      setImage(result.uri)
     }
-  };
+  }
 
-  const handleAddIngredient = () => {
-    if (ingredient) {
+  const handleAddIngredient = (): void => {
+    if (ingredient.length > 0) {
       const ingrQuanitity: Ingredient = {
         name: ingredient,
         quantity: 'test',
-        quantity_type: 'test'
+        quantity_type: 'test',
       }
       setIngredients([...ingredients, ingrQuanitity])
       setIngredient('')
     }
-  };
+  }
 
-  const handleSubmit = async () => {
-    if (name && ingredients.length > 0) {
+  const handleSubmit = async (): Promise<void> => {
+    if (name.length > 0 && ingredients.length > 0) {
       setLoading(true)
       const requestData: Recipe = {
-        name: name,
-        description: description,
-        image_url: image ? image : '',
-        ingredients: ingredients,
-      };
+        name,
+        description,
+        image_url: image,
+        ingredients,
+      }
       try {
-        const [data, err] = await axiosRequest('POST', token, endpoints.createRecipe, requestData)
-        if (err) {
-          throw new Error(err);
-        }
-        router.push('/(app)');
-        setName('');
-        setDescription('');
-        setIngredients([]);
+        await axiosRequest('POST', token, endpoints.createRecipe, requestData)
+        router.push('/(app)')
       } catch (error) {
-        setError(error.message);
+        setError(error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     } else {
-      if (!name) {
-        Alert.alert("Name can't be empty!");
+      if (name.length === 0) {
+        Alert.alert("Name can't be empty!")
       } else {
-        Alert.alert('Please specify ingredients!');
+        Alert.alert('Please specify ingredients!')
       }
     }
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
-        {image && <Image source={{ uri: image }} style={styles.image} />}
-        <Button title="Pick an Image" onPress={pickImage} />
+        {image != null && (
+          <Image source={{ uri: image }} style={styles.image} />
+        )}
+        <Button title="Pick an Image" onPress={() => pickImage} />
       </View>
 
       <Text style={styles.label}>Recipe Name</Text>
@@ -127,7 +133,7 @@ const NewRecipeForm = () => {
         ))}
       </ScrollView>
 
-      <Button title="Submit Recipe" onPress={handleSubmit} />
+      <Button title="Submit Recipe" onPress={() => handleSubmit} />
 
       {/* Loading indicator */}
       {loading && (
@@ -136,8 +142,8 @@ const NewRecipeForm = () => {
         </View>
       )}
     </ScrollView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -188,6 +194,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-});
+})
 
-export default NewRecipeForm;
+export default NewRecipeForm

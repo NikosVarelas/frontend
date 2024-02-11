@@ -52,7 +52,7 @@ const deleteRequest = async (
   }
 
   try {
-    const response = await axios.delete(url, { headers: headers })
+    const response = await axios.delete(url, { headers })
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error) && error.response != null) {

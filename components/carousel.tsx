@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { router } from 'expo-router'
 
-const Carousel = (props) => {
+const Carousel = (props: { data: ArrayLike<any> | null | undefined }): JSX.Element => {
   return (
     <View style={styles.container}>
       <FlatList

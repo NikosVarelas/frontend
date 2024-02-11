@@ -7,19 +7,19 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native'
 import { useSession } from '@/context/ctx'
 import { router } from 'expo-router'
 
-export default function SignIn() {
+export default function SignIn(): JSX.Element {
   const { signIn } = useSession()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = async (username: string, password: string) => {
+  const handleSignIn = async (username: string, password: string): Promise<void> => {
     try {
       setIsLoading(true)
       await signIn(username, password)
@@ -81,7 +81,9 @@ export default function SignIn() {
       )}
       <TouchableOpacity
         style={[styles.loginBtn, isLoading && styles.disabledButton]}
-        onPress={() => { void handleSignIn(username, password) }}
+        onPress={() => {
+          void handleSignIn(username, password)
+        }}
         disabled={isLoading}
       >
         <Text>LOGIN</Text>
@@ -94,10 +96,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   image: {
-    marginBottom: 40
+    marginBottom: 40,
   },
   inputView: {
     backgroundColor: '#90EE90',
@@ -105,17 +107,17 @@ const styles = StyleSheet.create({
     width: '70%',
     height: 45,
     marginBottom: 20,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   TextInput: {
     height: 50,
     flex: 1,
     padding: 10,
-    marginLeft: 20
+    marginLeft: 20,
   },
   forgot_button: {
     height: 30,
-    marginBottom: 30
+    marginBottom: 30,
   },
   loginBtn: {
     width: '80%',
@@ -124,14 +126,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 40,
-    backgroundColor: '#006400'
+    backgroundColor: '#006400',
   },
   errorMessage: {
     color: 'red',
-    marginBottom: 16
+    marginBottom: 16,
   },
   disabledButton: {
     opacity: 0.5,
-    backgroundColor: 'gray'
-  }
+    backgroundColor: 'gray',
+  },
 })
