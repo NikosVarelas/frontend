@@ -13,8 +13,6 @@ import {
 import * as ImagePicker from 'expo-image-picker'
 import { useSession } from '@/context/ctx'
 import { type Recipe, type Ingredient } from '@/models/Recipe'
-import { axiosRequest } from '@/constants/axiosRequest'
-import { endpoints } from '@/constants/endpoint'
 import { router } from 'expo-router'
 import { createRecipe } from '@/store/recipes'
 import { useDispatch } from 'react-redux'
@@ -24,12 +22,13 @@ const NewRecipeForm = (): JSX.Element => {
   const [name, setName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [ingredient, setIngredient] = useState<string>('')
+  const [measure, setMeasure] = useState<string>('')
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [image, setImage] = useState<string | null>(null)
   const { token } = useSession()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const dispatch: Dispatch = useDispatch()
+  const dispatch: Dispatch<any> = useDispatch()
 
   useEffect(() => {
     void (async () => {
@@ -57,11 +56,11 @@ const NewRecipeForm = (): JSX.Element => {
     if (ingredient.length > 0) {
       const ingrQuanitity: Ingredient = {
         name: ingredient,
-        quantity: 'test',
-        quantity_type: 'test',
+        measure,
       }
       setIngredients([...ingredients, ingrQuanitity])
       setIngredient('')
+      setMeasure('')
     }
   }
 
@@ -126,14 +125,23 @@ const NewRecipeForm = (): JSX.Element => {
           value={ingredient}
           onChangeText={setIngredient}
         />
+      </View>
+      <View style={styles.ingredientInputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter measure"
+          value={measure}
+          onChangeText={setMeasure}
+        />
+      </View>
+      <View style={styles.ingredientInputContainer}>
         <Button title="Add Ingredient" onPress={handleAddIngredient} />
       </View>
-
       <Text style={styles.label}>Ingredient List</Text>
       <ScrollView style={styles.ingredientListContainer}>
         {ingredients.map((item, index) => (
           <Text key={index} style={styles.ingredientItem}>
-            {item.name}: {item.quantity} {item.quantity_type}
+            {item.name}: {item.measure}
           </Text>
         ))}
       </ScrollView>
@@ -184,7 +192,7 @@ const styles = StyleSheet.create({
   ingredientInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 5,
   },
   ingredientListContainer: {
     maxHeight: 120,

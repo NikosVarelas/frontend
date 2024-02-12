@@ -1,3 +1,4 @@
+import React from 'react'
 import { Redirect } from 'expo-router'
 import { ActivityIndicator, View } from 'react-native'
 import { Provider } from 'react-redux'
@@ -7,7 +8,7 @@ import { useSession } from '@/context/ctx'
 import { Drawer } from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 
-export default function AppLayout() {
+export default function AppLayout(): JSX.Element {
   const { isLoading, token } = useSession()
 
   if (isLoading) {

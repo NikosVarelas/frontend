@@ -1,6 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import recipesSlice from './recipes';
+import recipesSlice, { type RecipeState } from './recipes';
 import shoppingListSlice from './shopping-list';
+
+export interface StoreState {
+    recipes: RecipeState
+}
 
 const store = configureStore({
     reducer: {
