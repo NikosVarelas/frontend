@@ -18,6 +18,7 @@
     "@react-navigation/drawer": "^6.6.6",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.1.0",
+    "@shopify/flash-list": "^1.6.3",
     "axios": "^1.6.7",
     "expo": "~50.0.5",
     "expo-font": "~11.10.2",
