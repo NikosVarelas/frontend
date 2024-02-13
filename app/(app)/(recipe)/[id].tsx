@@ -1,32 +1,39 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
-import { FontAwesome } from '@expo/vector-icons'
 import { useSession } from '@/context/ctx'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { type Dispatch } from 'redux'
 import { deleteRecipe } from '@/store/recipes'
+import { addRecipe } from '@/store/shopping-list'
+import { type StoreState } from '@/store'
+import { type Recipe } from '@/models/Recipe'
+import { FontAwesome } from '@expo/vector-icons'
 
 const Page = (): JSX.Element => {
   const { id } = useLocalSearchParams<{ id: string }>()
   const recipeId = parseInt(id)
   const { token } = useSession()
-  const dispatch: Dispatch = useDispatch()
+  const dispatch: Dispatch<any> = useDispatch()
 
-  const handleAddtoBasket = (id: number): void => {
-    console.log(`Added to basket recipe ${id}`)
+  const recipes: Recipe[] = useSelector((state: StoreState) => state.recipes.recipes)
+  const recipeData: Recipe | undefined = recipes.find(recipe => recipe.id === recipeId)
+
+  const handleAddtoBasket = (): void => {
+    if (recipeData != null) {
+      dispatch(addRecipe(token, recipeData))
+    }
   }
 
-  const handleDeleteRecipeYes = async (id: number): Promise<void> => {
+  const handleDeleteRecipeYes = async (): Promise<void> => {
     try {
       await dispatch(deleteRecipe(token, recipeId))
       router.push('/(app)')
     } catch (error) {
-      console.log(error)
     }
   }
 
-  const handleDeleteRecipe = (id: number): void => {
+  const handleDeleteRecipe = (): void => {
     Alert.alert(
       'Confirm Deletion',
       'Are you sure you want to delete the recipe?',
@@ -41,8 +48,7 @@ const Page = (): JSX.Element => {
         {
           text: 'Yes',
           onPress: () => {
-            // Perform delete action here
-            void handleDeleteRecipeYes(id)
+            handleDeleteRecipeYes()
             router.push('/(app)')
           },
         },
@@ -57,7 +63,7 @@ const Page = (): JSX.Element => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          handleAddtoBasket(recipeId)
+          handleAddtoBasket()
         }}
       >
         <FontAwesome
@@ -71,7 +77,7 @@ const Page = (): JSX.Element => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          handleDeleteRecipe(recipeId)
+          handleDeleteRecipe()
         }}
       >
         <FontAwesome name="trash" size={20} color="#fff" style={styles.icon} />

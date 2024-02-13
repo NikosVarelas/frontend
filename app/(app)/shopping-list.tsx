@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useSession } from '@/context/ctx'
 
 export default function Page(): JSX.Element {
-    console.log('here')
   const dispatch: Dispatch<any> = useDispatch()
   const { token } = useSession()
   const data: Ingredient[] = useSelector(
@@ -20,9 +19,7 @@ export default function Page(): JSX.Element {
   useEffect(() => {
     dispatch(fetchSLData(token))
   }, [dispatch])
-  
-  console.log(data)
-  console.log(loading)
+
   return (
     <View>
       <Text>Shopping list</Text>
@@ -31,7 +28,9 @@ export default function Page(): JSX.Element {
       ) : (
         <View>
           {data?.map((ingredient, index) => (
-            <Text key={index}>{ingredient.name}: {ingredient.measure}</Text>
+            <Text key={index}>
+              {ingredient.name}: {ingredient.measure}
+            </Text>
           ))}
         </View>
       )}

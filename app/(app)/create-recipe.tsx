@@ -77,7 +77,6 @@ const NewRecipeForm = (): JSX.Element => {
         dispatch(createRecipe(token, requestData))
         router.push('/(app)')
       } catch (error) {
-        console.log(error)
         setError(error)
       } finally {
         setLoading(false)
