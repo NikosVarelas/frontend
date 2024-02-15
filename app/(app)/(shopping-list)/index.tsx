@@ -13,6 +13,8 @@ import { type Dispatch } from 'redux'
 import { FlatList } from 'react-native-gesture-handler'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 
+let isInitial = true
+
 export default function Page(): JSX.Element {
   const dispatch: Dispatch<any> = useDispatch()
   const { token } = useSession()
@@ -22,7 +24,10 @@ export default function Page(): JSX.Element {
   const loading = useSelector((state: StoreState) => state.shoppingList.loading)
 
   useEffect(() => {
+    if (isInitial) {
     dispatch(fetchSLData(token))
+    isInitial = false
+    }
   }, [dispatch, token])
 
   return (
