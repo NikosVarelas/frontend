@@ -1,12 +1,13 @@
 import React from 'react'
 import { Redirect } from 'expo-router'
-import { ActivityIndicator, View } from 'react-native'
+import { ActivityIndicator, View, Pressable } from 'react-native'
 import { Provider } from 'react-redux'
 
 import store from '@/store'
 import { useSession } from '@/context/ctx'
 import { Drawer } from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 
 export default function AppLayout(): JSX.Element {
   const { isLoading, token } = useSession()
@@ -19,7 +20,7 @@ export default function AppLayout(): JSX.Element {
     )
   }
 
-  if ((token == null) && !isLoading) {
+  if (token == null && !isLoading) {
     return <Redirect href="/sign-in" />
   }
 
@@ -68,10 +69,34 @@ export default function AppLayout(): JSX.Element {
             headerTitle: 'Shopping List',
             title: 'Shopping List',
             drawerIcon: () => <Ionicons name="basket" size={20} />,
+            headerTintColor: 'black',
+            headerStyle: {
+              backgroundColor: 'green',
+            },
+            headerRight: () => (
+              <Pressable
+                onPress={() => {
+                  router.push('/(app)/(modals)/shopping-list')
+                }}
+              >
+                <Ionicons name="pencil" size={26} style={{ marginRight: 20 }} />
+              </Pressable>
+            ),
           }}
         />
         <Drawer.Screen
           name="(recipe)"
+          options={{
+            drawerItemStyle: { height: 0 },
+            headerShown: false,
+            headerTintColor: 'black',
+            headerStyle: {
+              backgroundColor: 'green',
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="(modals)"
           options={{
             drawerItemStyle: { height: 0 },
             headerShown: false,

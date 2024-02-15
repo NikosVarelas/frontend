@@ -18,7 +18,7 @@ const Carousel = (props: { data: ArrayLike<any> | null | undefined }): JSX.Eleme
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
+          <TouchableOpacity style={{width:200, height: 200, margin: 8}}
             onPress={() => {
               router.push(`/(recipe)/${item.id}`)
             }}
@@ -36,28 +36,25 @@ const Carousel = (props: { data: ArrayLike<any> | null | undefined }): JSX.Eleme
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 10,
-    marginBottom: 100
+    marginTop: 50,
   },
   list: {
-    marginBottom: 100
+    marginBottom: 0
   },
   item: {
+    fontWeight: 'bold',
     width: 200,
     height: 200,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ddd',
-    margin: 10,
+    margin: 8,
     borderRadius: 10
   },
   image: {
-    width: '100%',
-    height: '80%', // Adjust the height based on your preference
     borderRadius: 10,
-    marginBottom: 5
+    marginBottom: 0
   }
 })
 

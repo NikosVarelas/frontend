@@ -25,16 +25,22 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
+    width: '100%',
     backgroundColor: '#3498db',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 25,
     alignItems: 'center',
-    margin: 10,
-    marginBottom: 200
+    marginTop: 0,
+    marginBottom: 100,
+    marginLeft: 10,
+    marginRight: 10
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16
+    color: 'white',
+    fontSize: 16,
+    marginTop: 10,
+    marginLeft: 100,
+    marginRight: 100
   }
 })
 

@@ -7,12 +7,16 @@ import CustomButton from '@/components/CustomButton'
 import React, { useEffect } from 'react'
 import { fetchRecipeData } from '@/store/recipes'
 import { type StoreState } from '@/store'
-import {type Dispatch} from 'redux'
+import { type Dispatch } from 'redux'
 
 export default function Index(): JSX.Element {
   const { signOut, token } = useSession()
-  const data: Recipe[] = useSelector((state: StoreState) => state.recipes.recipes)
-  const loading: boolean = useSelector((state: StoreState) => state.recipes.loading)
+  const data: Recipe[] = useSelector(
+    (state: StoreState) => state.recipes.recipes
+  )
+  const loading: boolean = useSelector(
+    (state: StoreState) => state.recipes.loading
+  )
   const dispatch: Dispatch<any> = useDispatch()
 
   useEffect(() => {
@@ -20,16 +24,26 @@ export default function Index(): JSX.Element {
   }, [dispatch])
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {loading ? <ActivityIndicator /> : <Carousel data={data} />}
-      <CustomButton
-        title="Sign Out"
-        onPress={() => {
-          signOut()
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1
         }}
       >
-        Sign Out
-      </CustomButton>
+        {loading ? <ActivityIndicator /> : <Carousel data={data} />}
+      </View>
+      <View style={{flex:1}}>
+        <CustomButton
+          title="Sign Out"
+          onPress={() => {
+            signOut()
+          }}
+        >
+          Sign Out
+        </CustomButton>
+      </View>
     </View>
   )
 }
