@@ -64,27 +64,6 @@ export default function AppLayout(): JSX.Element {
           }}
         />
         <Drawer.Screen
-          name="shopping-list"
-          options={{
-            headerTitle: 'Shopping List',
-            title: 'Shopping List',
-            drawerIcon: () => <Ionicons name="basket" size={20} />,
-            headerTintColor: 'black',
-            headerStyle: {
-              backgroundColor: 'green',
-            },
-            headerRight: () => (
-              <Pressable
-                onPress={() => {
-                  router.push('/(app)/(modals)/shopping-list')
-                }}
-              >
-                <Ionicons name="pencil" size={26} style={{ marginRight: 20 }} />
-              </Pressable>
-            ),
-          }}
-        />
-        <Drawer.Screen
           name="(recipe)"
           options={{
             drawerItemStyle: { height: 0 },
@@ -96,14 +75,25 @@ export default function AppLayout(): JSX.Element {
           }}
         />
         <Drawer.Screen
-          name="(modals)"
+          name="(shopping-list)"
           options={{
-            drawerItemStyle: { height: 0 },
-            headerShown: false,
+            headerShown: true,
+            title: 'Shopping List',
+            headerTitle: 'Shopping List',
             headerTintColor: 'black',
+            drawerIcon: () => <Ionicons name="basket" size={20} />,
             headerStyle: {
               backgroundColor: 'green',
             },
+            headerRight: () => (
+              <Pressable
+                onPress={() => {
+                  router.push('/(app)/(shopping-list)/modal')
+                }}
+              >
+                <Ionicons name="pencil" size={26} style={{ marginRight: 20 }} />
+              </Pressable>
+            ),
           }}
         />
       </Drawer>

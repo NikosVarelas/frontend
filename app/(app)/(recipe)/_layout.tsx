@@ -11,7 +11,11 @@ const Layout = (): JSX.Element => {
         options={{
           title: 'Recipe',
           headerLeft: () => (
-            <Pressable onPress={() => { router.back() }}>
+            <Pressable
+              onPress={() => {
+                router.back()
+              }}
+            >
               <Ionicons name="chevron-back" size={26} />
             </Pressable>
           ),

@@ -4,7 +4,6 @@ import {
   Text,
   ActivityIndicator,
   StyleSheet,
-  TouchableOpacity,
 } from 'react-native'
 import { fetchSLData } from '@/store/shopping-list'
 import { useDispatch, useSelector } from 'react-redux'
