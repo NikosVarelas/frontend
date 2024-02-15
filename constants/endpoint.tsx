@@ -7,4 +7,5 @@ export const endpoints = {
   deleteRecipe: 'http://localhost:8000/v1/recipe/delete',
   getShoppingList: 'http://localhost:8000/v1/sl/get_shopping_list',
   updateShoppingList: 'http://localhost:8000/v1/sl/update',
+  createShoppingList: 'http://localhost:8000/v1/sl/add'
 }

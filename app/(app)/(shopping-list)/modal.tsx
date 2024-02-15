@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import {
   View,
-  Text,
+  TextInput,
   ActivityIndicator,
   StyleSheet,
+  Pressable,
+  TouchableOpacity,
+  Text,
 } from 'react-native'
 import { fetchSLData } from '@/store/shopping-list'
 import { useDispatch, useSelector } from 'react-redux'
@@ -24,8 +27,8 @@ export default function Page(): JSX.Element {
 
   useEffect(() => {
     if (isInitial) {
-    dispatch(fetchSLData(token))
-    isInitial = false
+      dispatch(fetchSLData(token))
+      isInitial = false
     }
   }, [dispatch, token])
 
@@ -52,6 +55,8 @@ export default function Page(): JSX.Element {
 
 const ShoppingItem: React.FC<Prop> = ({ item }) => {
   const [isChecked, setIsChecked] = useState(false)
+  const [name, setName] = useState(item.name)
+  const [measure, setMeasure] = useState(item.measure)
 
   const toggleCheck = (): void => {
     setIsChecked(!isChecked)
@@ -60,17 +65,19 @@ const ShoppingItem: React.FC<Prop> = ({ item }) => {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemText}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemMeasure}>{item.measure}</Text>
+        <TextInput
+          style={styles.itemName}
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.itemMeasure}
+          value={measure}
+          onChangeText={setMeasure}
+        />
       </View>
-      <BouncyCheckbox
-        size={25}
-        fillColor="green"
-        unfillColor="#FFFFFF"
-        iconStyle={{ borderColor: 'green', borderRadius: 4 }}
-        innerIconStyle={{ borderWidth: 2, borderRadius: 4 }}
-        onPress={(isChecked: boolean) => {}}
-      />
+      <TouchableOpacity style={styles.editButton}>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -99,5 +106,9 @@ const styles = StyleSheet.create({
   loading: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  editButton: {
+    color: 'green',
+    borderWidth: 0.2,
   },
 })

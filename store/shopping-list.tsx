@@ -4,6 +4,7 @@ import { type Dispatch } from 'redux'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 import { type ShoppingList } from '@/models/ShoppingList'
+import axios from 'axios'
 
 export interface ShoppingListState {
   loading: boolean
@@ -54,40 +55,48 @@ export const fetchSLData = (token: string | null) => {
 }
 
 export const addRecipe = (token: string | null, data: Recipe) => {
-    return async (dispatch: Dispatch<any>, getState: () => RootState) => {
-      try {
-        dispatch(shoppingListActions.setLoading(true))
-  
-        // Create a new ShoppingList object with the added recipe ingredients
-        const newShoppingList: ShoppingList = {
-          ingredients: data.ingredients,
-        }
-  
-        // Dispatch the 'add' action to add the new shopping list to the store
-        dispatch(shoppingListActions.add(newShoppingList))
-  
-        // Get the current state of the shopping list from the Redux store
-        const currentState = getState().shoppingList
-        console.log(currentState)
-  
-        // Send the updated shopping list to the server using axiosRequest
-        const response: ShoppingList = await axiosRequest(
+  return async (dispatch: Dispatch<any>, getState: () => RootState) => {
+    try {
+      dispatch(shoppingListActions.setLoading(true))
+
+      const initialState: ShoppingList = getState().shoppingList
+
+      const newShoppingList: ShoppingList = {
+        ingredients: data.ingredients,
+      }
+
+      dispatch(shoppingListActions.add(newShoppingList))
+      const currentState: ShoppingList = getState().shoppingList
+
+      let response: ShoppingList;
+
+      if (initialState.ingredients.length === 0) {
+        response = await axiosRequest(
+          'POST',
+          token,
+          endpoints.createShoppingList,
+          currentState
+        )
+      } else {
+        response = await axiosRequest(
           'PUT',
           token,
           endpoints.updateShoppingList,
           currentState  // Pass the updated shopping list as data for the PUT request
         )
-  
-        // Replace the shopping list in the store with the updated one
-        dispatch(shoppingListActions.replace(response))
-      } catch (error) {
-        console.error('Error adding recipe:', error)
-        throw new Error(error)
-      } finally {
-        dispatch(shoppingListActions.setLoading(false))
       }
+
+      // Replace the shopping list in the store with the updated one
+      dispatch(shoppingListActions.replace(response))
+    } catch (error) {
+      console.error('Error adding recipe:', error)
+      throw new Error(error)
+    } finally {
+      dispatch(shoppingListActions.setLoading(false))
     }
   }
+}
+
   
 
 export const shoppingListActions = shoppingListSlice.actions

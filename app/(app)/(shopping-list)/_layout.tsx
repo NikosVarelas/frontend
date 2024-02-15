@@ -25,6 +25,7 @@ const Layout = (): JSX.Element => {
       <Stack.Screen
         name="modal"
         options={{
+          title: 'Edit',
           presentation: 'modal',
         }}
       />
