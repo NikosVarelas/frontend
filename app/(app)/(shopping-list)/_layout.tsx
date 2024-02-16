@@ -7,7 +7,7 @@ const Layout = (): JSX.Element => {
   return (
     <Stack>
       <Stack.Screen
-        name="index"
+        name="page"
         options={{
           headerShown: false,
           headerTitle: '',

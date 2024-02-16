@@ -9,4 +9,5 @@ export interface Recipe {
   description: string | null
   image_url: string | null
   ingredients: Ingredient[]
+  instructions: string
 }

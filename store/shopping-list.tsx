@@ -4,7 +4,7 @@ import { type Dispatch } from 'redux'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 import { type ShoppingList } from '@/models/ShoppingList'
-import axios from 'axios'
+import { type StoreState } from '.'
 
 export interface ShoppingListState {
   loading: boolean
@@ -27,7 +27,7 @@ const shoppingListSlice = createSlice({
       state.ingredients = action.payload.ingredients
     },
     getState(state) {
-        return state
+      return state
     },
     edit(state) {},
     setLoading(state, action: PayloadAction<boolean>) {
@@ -55,7 +55,7 @@ export const fetchSLData = (token: string | null) => {
 }
 
 export const addRecipe = (token: string | null, data: Recipe) => {
-  return async (dispatch: Dispatch<any>, getState: () => RootState) => {
+  return async (dispatch: Dispatch<any>, getState: () => StoreState) => {
     try {
       dispatch(shoppingListActions.setLoading(true))
 
@@ -68,7 +68,7 @@ export const addRecipe = (token: string | null, data: Recipe) => {
       dispatch(shoppingListActions.add(newShoppingList))
       const currentState: ShoppingList = getState().shoppingList
 
-      let response: ShoppingList;
+      let response: ShoppingList
 
       if (initialState.ingredients.length === 0) {
         response = await axiosRequest(
@@ -82,7 +82,7 @@ export const addRecipe = (token: string | null, data: Recipe) => {
           'PUT',
           token,
           endpoints.updateShoppingList,
-          currentState  // Pass the updated shopping list as data for the PUT request
+          currentState // Pass the updated shopping list as data for the PUT request
         )
       }
 
@@ -97,8 +97,5 @@ export const addRecipe = (token: string | null, data: Recipe) => {
   }
 }
 
-  
-
 export const shoppingListActions = shoppingListSlice.actions
 export default shoppingListSlice
-

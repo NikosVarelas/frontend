@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import {
-  View,
-  TextInput,
-  ActivityIndicator,
-  StyleSheet,
-  Pressable,
-  TouchableOpacity,
-  Text,
-} from 'react-native'
+import React, { useEffect } from 'react'
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native'
 import { fetchSLData } from '@/store/shopping-list'
 import { useDispatch, useSelector } from 'react-redux'
 import { useSession } from '@/context/ctx'
 import { type StoreState } from '@/store'
 import { type Dispatch } from 'redux'
 import { FlatList } from 'react-native-gesture-handler'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import ShoppingItem from '@/components/ShoppingItem'
 
 let isInitial = true
 export default function Page(): JSX.Element {
@@ -33,51 +25,27 @@ export default function Page(): JSX.Element {
   }, [dispatch, token])
 
   return (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#0000ff"
-          style={styles.loading}
-        />
-      ) : (
-        <>
-          <FlatList
-            data={data}
-            renderItem={({ item }) => <ShoppingItem item={item} />}
-            contentContainerStyle={styles.listContainer}
+    <View style={{flex:1}}>
+      <View style={{flex: 1}}>
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={styles.loading}
           />
-        </>
-      )}
-    </View>
-  )
-}
-
-const ShoppingItem: React.FC<Prop> = ({ item }) => {
-  const [isChecked, setIsChecked] = useState(false)
-  const [name, setName] = useState(item.name)
-  const [measure, setMeasure] = useState(item.measure)
-
-  const toggleCheck = (): void => {
-    setIsChecked(!isChecked)
-  }
-
-  return (
-    <View style={styles.itemContainer}>
-      <View style={styles.itemText}>
-        <TextInput
-          style={styles.itemName}
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={styles.itemMeasure}
-          value={measure}
-          onChangeText={setMeasure}
-        />
+        ) : (
+          <>
+            <FlatList
+              data={data}
+              renderItem={({ item }) => <ShoppingItem item={item} />}
+              contentContainerStyle={styles.listContainer}
+            />
+          </>
+        )}
       </View>
-      <TouchableOpacity style={styles.editButton}>
-      </TouchableOpacity>
+      <View style={{flex:1}}>
+        <Text> Test </Text>
+      </View>
     </View>
   )
 }
@@ -88,7 +56,6 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
   },
   itemContainer: {
-    backgroundColor: 'white',
     flexDirection: 'row',
     padding: 8,
     alignItems: 'center',

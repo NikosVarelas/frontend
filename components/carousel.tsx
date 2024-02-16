@@ -4,11 +4,15 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Image,
 } from 'react-native'
 import { router } from 'expo-router'
+import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace'
 
-const Carousel = (props: { data: ArrayLike<any> | null | undefined }): JSX.Element => {
+const Carousel = (props: {
+  data: ArrayLike<any> | null | undefined
+}): JSX.Element => {
   return (
     <View style={styles.container}>
       <FlatList
@@ -18,16 +22,28 @@ const Carousel = (props: { data: ArrayLike<any> | null | undefined }): JSX.Eleme
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={{width:200, height: 200, margin: 8}}
-            onPress={() => {
-              router.push(`/(recipe)/${item.id}`)
-            }}
-          >
-            <View style={styles.item}>
-              {/* <Image source={item.name} style={styles.image}/> */}
-              <Text>{item.name}</Text>
+          <View style={{ alignItems: 'center' }}>
+            <TouchableOpacity
+              style={{ width: 200, height: 200, margin: 8 }}
+              onPress={() => {
+                router.push(`/(recipe)/${item.id}`)
+              }}
+            >
+              <View style={styles.item}>
+                <Image
+                  source={{ uri: item.image_url }}
+                  style={styles.image}
+                />
+              </View>
+            </TouchableOpacity>
+            <View style={styles.itemName}>
+              <Text>
+                {item.name.length > 20
+                  ? `${item.name.slice(0, 20)}...`
+                  : item.name}
+              </Text>
             </View>
-          </TouchableOpacity>
+          </View>
         )}
       />
     </View>
@@ -39,7 +55,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   list: {
-    marginBottom: 0
+    marginBottom: 0,
   },
   item: {
     fontWeight: 'bold',
@@ -50,12 +66,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
     margin: 8,
-    borderRadius: 10
+    borderRadius: 20,
   },
   image: {
-    borderRadius: 10,
-    marginBottom: 0
-  }
+    width: 200,
+    height: 200,
+    borderRadius: 20,
+  },
+  itemName: {
+    marginTop: 10,
+    fontStyle: 'italic',
+  },
 })
 
 export default Carousel
