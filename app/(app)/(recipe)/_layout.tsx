@@ -19,6 +19,15 @@ const Layout = (): JSX.Element => {
               <Ionicons name="chevron-back" size={26} />
             </Pressable>
           ),
+          headerRight: () => (
+            <Pressable
+              onPress={() => {
+                router.back()
+              }}
+            >
+              <Ionicons name="heart" size={26} />
+            </Pressable>
+          ),
           headerStyle: {
             backgroundColor: 'green',
           },
