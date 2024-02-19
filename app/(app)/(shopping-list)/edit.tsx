@@ -4,7 +4,6 @@ import { useSession } from '@/context/ctx'
 import { FlatList } from 'react-native-gesture-handler'
 import ShoppingItem from '@/components/ShoppingItem'
 import { useShoppingListStore } from '@/store/shoppingListStore'
-import { router } from 'expo-router'
 import { type Ingredient } from '@/models/Recipe'
 
 
@@ -13,8 +12,6 @@ export default function Page(): JSX.Element {
   const data = useShoppingListStore((state) => state.ingredients)
   const ingredientList = useState<Ingredient[]>(data)
   const loading = useShoppingListStore((state) => state.loading)
-  const isPresented = router.canGoBack();
-  console.log(isPresented)
 
   return (
     <View style={{ flex: 1 }}>

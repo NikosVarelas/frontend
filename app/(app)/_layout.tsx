@@ -1,13 +1,12 @@
 import React from 'react'
 import { Redirect } from 'expo-router'
-import { ActivityIndicator, View, Pressable } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { Provider } from 'react-redux'
 
 import store from '@/store'
 import { useSession } from '@/context/ctx'
 import { Drawer } from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
 
 export default function AppLayout(): JSX.Element {
   const { isLoading, token } = useSession()
@@ -77,23 +76,9 @@ export default function AppLayout(): JSX.Element {
         <Drawer.Screen
           name="(shopping-list)"
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Shopping List',
-            headerTitle: 'Shopping List',
-            headerTintColor: 'black',
             drawerIcon: () => <Ionicons name="basket" size={20} />,
-            headerStyle: {
-              backgroundColor: 'green',
-            },
-            headerRight: () => (
-              <Pressable
-                onPress={() => {
-                  router.push('/(app)/(shopping-list)/modal')
-                }}
-              >
-                <Ionicons name="pencil" size={26} style={{ marginRight: 20 }} />
-              </Pressable>
-            ),
           }}
         />
       </Drawer>
