@@ -74,10 +74,8 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
   replace: () => {},
   setLoading: () => {},
   deleteItem: (index: number) => {
-    console.log('I am here')
     const ingredients = get().ingredients.slice() 
     ingredients.splice(index, 1)
-    console.log(ingredients)
     set({ ingredients })
   },
 }))

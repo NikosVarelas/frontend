@@ -6,17 +6,35 @@ import ShoppingItem from '@/components/ShoppingItem'
 import { useShoppingListStore } from '@/store/shoppingListStore'
 import { type Ingredient } from '@/models/Recipe'
 
-
 export default function Page(): JSX.Element {
   const { token } = useSession()
   const data = useShoppingListStore((state) => state.ingredients)
   const ingredientList = useState<Ingredient[]>(data)
   const loading = useShoppingListStore((state) => state.loading)
-  const deleteItem = useShoppingListStore((state) => state.deleteItem);
+  const deleteItem = useShoppingListStore((state) => state.deleteItem)
 
-  const renderItem = ({ item, index }: { item: Ingredient; index: number }): JSX.Element => (
-    <ShoppingItem item={item} index={index} onDelete={() => { deleteItem(index); }} />
-  );
+  const [listKey, setListKey] = useState(0)
+
+  const handleDelete = (index: number): void => {
+    deleteItem(index)
+    setListKey((prevKey) => prevKey + 1)
+  }
+
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: Ingredient
+    index: number
+  }): JSX.Element => (
+    <ShoppingItem
+      item={item}
+      index={index}
+      onDelete={() => {
+        handleDelete(index)
+      }}
+    />
+  )
 
   return (
     <View style={{ flex: 1 }}>
@@ -30,9 +48,11 @@ export default function Page(): JSX.Element {
         ) : (
           <>
             <FlatList
+              key={listKey}
               data={data}
               renderItem={renderItem}
               contentContainerStyle={styles.listContainer}
+              keyExtractor={(item, index) => index.toString()}
             />
           </>
         )}
