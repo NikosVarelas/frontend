@@ -8,13 +8,18 @@ import {
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
-const ShoppingItem: React.FC<Prop> = ({ item }) => {
+const ShoppingItem: React.FC<Prop> = ({ item, onDelete, index }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [name, setName] = useState(item.name)
   const [measure, setMeasure] = useState(item.measure)
 
   const toggleEdit = (): void => {
     setIsChecked(!isChecked)
+  }
+
+  const handleDelete = (): void => {
+    console.log(index)
+    onDelete(index)
   }
 
   return (
@@ -32,12 +37,11 @@ const ShoppingItem: React.FC<Prop> = ({ item }) => {
             onChangeText={setMeasure}
           />
         </View>
-        <TouchableOpacity style={styles.editButton} onPress={toggleEdit}>
-          <FontAwesome name="edit" size={20} color="gray" />
+        <TouchableOpacity style={styles.editButton} onPress={handleDelete}>
+          <FontAwesome name="trash" size={26} color="red" />
         </TouchableOpacity>
       </View>
-      <View style={{marginBottom: 4}}>
-      </View>
+      <View style={{ marginBottom: 4 }}></View>
     </View>
   )
 }

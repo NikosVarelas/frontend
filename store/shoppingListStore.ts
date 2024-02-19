@@ -12,6 +12,7 @@ interface ShoppingListStore {
   add: (newRecipe: Recipe, token: string | null) => Promise<void>
   replace: () => void
   setLoading: () => void
+  deleteItem: (index: number) => void
 }
 
 export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
@@ -72,4 +73,11 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
   },
   replace: () => {},
   setLoading: () => {},
+  deleteItem: (index: number) => {
+    console.log('I am here')
+    const ingredients = get().ingredients.slice() 
+    ingredients.splice(index, 1)
+    console.log(ingredients)
+    set({ ingredients })
+  },
 }))

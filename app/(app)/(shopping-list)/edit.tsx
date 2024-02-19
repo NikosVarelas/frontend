@@ -12,6 +12,11 @@ export default function Page(): JSX.Element {
   const data = useShoppingListStore((state) => state.ingredients)
   const ingredientList = useState<Ingredient[]>(data)
   const loading = useShoppingListStore((state) => state.loading)
+  const deleteItem = useShoppingListStore((state) => state.deleteItem);
+
+  const renderItem = ({ item, index }: { item: Ingredient; index: number }): JSX.Element => (
+    <ShoppingItem item={item} index={index} onDelete={() => { deleteItem(index); }} />
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -26,7 +31,7 @@ export default function Page(): JSX.Element {
           <>
             <FlatList
               data={data}
-              renderItem={({ item }) => <ShoppingItem item={item} />}
+              renderItem={renderItem}
               contentContainerStyle={styles.listContainer}
             />
           </>
