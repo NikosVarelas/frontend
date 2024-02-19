@@ -1,34 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native'
-import { fetchSLData } from '@/store/shopping-list'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
 import { useSession } from '@/context/ctx'
-import { type StoreState } from '@/store'
-import { type Dispatch } from 'redux'
 import { FlatList } from 'react-native-gesture-handler'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import { useShoppingListStore } from '@/store/shoppingListStore'
 
 let isInitial = true
 
 export default function Page(): JSX.Element {
-  const dispatch: Dispatch<any> = useDispatch()
   const { token } = useSession()
-  const data = useSelector(
-    (state: StoreState) => state.shoppingList.ingredients
+  const data = useShoppingListStore((state) => state.ingredients)
+  const loading = useShoppingListStore((state) => state.loading)
+  const fetchShoppingList = useShoppingListStore(
+    (state) => state.fetchShoppingList
   )
-  const loading = useSelector((state: StoreState) => state.shoppingList.loading)
 
   useEffect(() => {
     if (isInitial) {
-    dispatch(fetchSLData(token))
-    isInitial = false
+      fetchShoppingList(token)
+      isInitial = false
     }
-  }, [dispatch, token])
+  }, [fetchShoppingList, token])
 
   return (
     <View style={styles.container}>
@@ -52,12 +44,6 @@ export default function Page(): JSX.Element {
 }
 
 const ShoppingItem: React.FC<Prop> = ({ item }) => {
-  const [isChecked, setIsChecked] = useState(false)
-
-  const toggleCheck = (): void => {
-    setIsChecked(!isChecked)
-  }
-
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemText}>

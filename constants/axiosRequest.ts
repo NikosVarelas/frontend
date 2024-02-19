@@ -1,7 +1,7 @@
-import axios from "axios"
+import axios from 'axios'
 
 const postRequest = async (
-  token: string | null,
+  token: string | null | undefined,
   data: any,
   url: string
 ): Promise<[any, string | null]> => {
@@ -22,7 +22,10 @@ const postRequest = async (
   }
 }
 
-const getRequest = async (token: string | null, url: string): Promise<any> => {
+const getRequest = async (
+  token: string | null | undefined,
+  url: string
+): Promise<any> => {
   const headers = {
     Accept: 'application/json',
     Authorization: `Bearer ${token}`,
@@ -41,7 +44,7 @@ const getRequest = async (token: string | null, url: string): Promise<any> => {
 }
 
 const deleteRequest = async (
-  token: string | null,
+  token: string | null | undefined,
   url: string
 ): Promise<any> => {
   const headers = {
@@ -62,7 +65,7 @@ const deleteRequest = async (
 }
 
 const putRequest = async (
-  token: string | null,
+  token: string | null | undefined,
   data: any,
   url: string
 ): Promise<any> => {
@@ -85,7 +88,7 @@ const putRequest = async (
 
 export const axiosRequest = async (
   method: string,
-  token: string | null,
+  token: string | null | undefined,
   url: string,
   data: any = null
 ): Promise<any> => {

@@ -1,32 +1,24 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, ActivityIndicator, StyleSheet, Text } from 'react-native'
-import { fetchSLData } from '@/store/shopping-list'
-import { useDispatch, useSelector } from 'react-redux'
 import { useSession } from '@/context/ctx'
-import { type StoreState } from '@/store'
-import { type Dispatch } from 'redux'
 import { FlatList } from 'react-native-gesture-handler'
 import ShoppingItem from '@/components/ShoppingItem'
+import { useShoppingListStore } from '@/store/shoppingListStore'
+import { router } from 'expo-router'
+import { type Ingredient } from '@/models/Recipe'
 
-let isInitial = true
+
 export default function Page(): JSX.Element {
-  const dispatch: Dispatch<any> = useDispatch()
   const { token } = useSession()
-  const data = useSelector(
-    (state: StoreState) => state.shoppingList.ingredients
-  )
-  const loading = useSelector((state: StoreState) => state.shoppingList.loading)
-
-  useEffect(() => {
-    if (isInitial) {
-      dispatch(fetchSLData(token))
-      isInitial = false
-    }
-  }, [dispatch, token])
+  const data = useShoppingListStore((state) => state.ingredients)
+  const ingredientList = useState<Ingredient[]>(data)
+  const loading = useShoppingListStore((state) => state.loading)
+  const isPresented = router.canGoBack();
+  console.log(isPresented)
 
   return (
-    <View style={{flex:1}}>
-      <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -43,7 +35,7 @@ export default function Page(): JSX.Element {
           </>
         )}
       </View>
-      <View style={{flex:1}}>
+      <View style={{ flex: 1 }}>
         <Text> Test </Text>
       </View>
     </View>

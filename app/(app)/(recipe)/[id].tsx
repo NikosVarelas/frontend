@@ -8,21 +8,24 @@ import { addRecipe } from '@/store/shopping-list'
 import { type StoreState } from '@/store'
 import { type Recipe } from '@/models/Recipe'
 import { FontAwesome } from '@expo/vector-icons'
+import { useShoppingListStore } from '@/store/shoppingListStore'
 
 const Page = (): JSX.Element => {
   const { id } = useLocalSearchParams<{ id: string }>()
   const recipeId = parseInt(id)
   const { token } = useSession()
   const dispatch: Dispatch<any> = useDispatch()
+  const shoppingListStore = useShoppingListStore()
 
   const recipes: Recipe[] = useSelector(
     (state: StoreState) => state.recipes.recipes
   )
   const recipeData: Recipe = recipes.find((recipe) => recipe.id === recipeId)
 
-  const handleAddtoBasket = (): void => {
+  const handleAddtoBasket = async (): Promise<void> => {
     if (recipeData != null) {
-      dispatch(addRecipe(token, recipeData))
+      // dispatch(addRecipe(token, recipeData))
+      await shoppingListStore.add(recipeData, token)
     }
   }
 
