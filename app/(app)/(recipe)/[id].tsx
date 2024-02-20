@@ -1,31 +1,25 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams, router } from 'expo-router'
 import { useSession } from '@/context/ctx'
-import { useDispatch, useSelector } from 'react-redux'
-import { type Dispatch } from 'redux'
-import { addRecipe } from '@/store/shopping-list'
-import { type StoreState } from '@/store'
 import { type Recipe } from '@/models/Recipe'
 import { FontAwesome } from '@expo/vector-icons'
 import { useShoppingListStore } from '@/store/shoppingListStore'
+import { useRecipeStore } from '@/store/recipeStore'
 
 const Page = (): JSX.Element => {
   const { id } = useLocalSearchParams<{ id: string }>()
   const recipeId = parseInt(id)
   const { token } = useSession()
-  const dispatch: Dispatch<any> = useDispatch()
-  const shoppingListStore = useShoppingListStore()
+  const shoppingListAdd = useShoppingListStore((state) => state.add)
+  const recipes = useRecipeStore((state) => state.recipes)
 
-  const recipes: Recipe[] = useSelector(
-    (state: StoreState) => state.recipes.recipes
-  )
   const recipeData: Recipe = recipes.find((recipe) => recipe.id === recipeId)
 
   const handleAddtoBasket = async (): Promise<void> => {
     if (recipeData != null) {
-      // dispatch(addRecipe(token, recipeData))
-      await shoppingListStore.add(recipeData, token)
+      router.push('/(app)')
+      await shoppingListAdd(recipeData, token)
     }
   }
 
