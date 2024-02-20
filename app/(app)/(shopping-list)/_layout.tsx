@@ -1,9 +1,13 @@
+import React from 'react'
+import { Pressable, Alert } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Stack, router } from 'expo-router'
-import React from 'react'
-import { Pressable } from 'react-native'
+import { useShoppingListStore } from '@/store/shoppingListStore'
+import { type Ingredient } from '@/models/Recipe'
 
 const Layout = (): JSX.Element => {
+  const data = useShoppingListStore((state) => state.ingredients)
+  
   return (
     <Stack>
       <Stack.Screen

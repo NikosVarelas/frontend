@@ -10,7 +10,7 @@ interface ShoppingListStore {
   errorMessage: string | undefined
   fetchShoppingList: (token: string | null | undefined) => Promise<void>
   add: (newRecipe: Recipe, token: string | null) => Promise<void>
-  replace: () => void
+  replace: (newIngredinetList: Ingredient[]) => void
   setLoading: () => void
   deleteItem: (index: number) => void
 }
@@ -71,7 +71,9 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
       set({ loading: false })
     }
   },
-  replace: () => {},
+  replace: (newIngredinetList: Ingredient[]) => {
+    set({ingredients: newIngredinetList})
+  },
   setLoading: () => {},
   deleteItem: (index: number) => {
     const ingredients = get().ingredients.slice() 
