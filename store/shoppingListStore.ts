@@ -21,7 +21,7 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
   errorMessage: null,
   fetchShoppingList: async (token: string | null | undefined) => {
     try {
-      set({ loading: true })
+      set({ loading: true, errorMessage: null })
       const response: ShoppingList = await axiosRequest(
         'GET',
         token,
@@ -29,13 +29,13 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
       )
       set({ ingredients: response.ingredients, errorMessage: null })
     } catch (error) {
-      set({errorMessage: error})
+      set({errorMessage: 'Failed to load recipes!'})
     } finally {
       set({ loading: false })
     }
   },
   add: async (newRecipe: Recipe, token: string | null) => {
-    set({ loading: true })
+    set({ loading: true, errorMessage: null })
     try {
       const currentState = get()
       const newShoppingList: ShoppingList = {
@@ -66,7 +66,7 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
       }
       set({ ingredients: response.ingredients })
     } catch (err) {
-      set({ errorMessage: err })
+      set({ errorMessage: 'Failed to add recipe!' })
     } finally {
       set({ loading: false })
     }

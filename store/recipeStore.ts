@@ -1,12 +1,7 @@
 import { create } from 'zustand'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
-
-export interface Recipe {
-  id: number
-  name: string
-  // Add more properties as needed
-}
+import { type Recipe } from '@/models/Recipe'
 
 interface RecipeState {
   recipes: Recipe[]
@@ -20,16 +15,21 @@ export const useRecipeStore = create<RecipeState>((set) => ({
   loading: false,
   errorMessage: null,
   fetchRecipes: async (token: string | null | undefined) => {
-    set((state) => ({ ...state, loading: true }))
+    set((state) => ({ ...state, loading: true, errorMessage: null }))
     try {
       const response: Recipe[] = await axiosRequest(
         'GET',
         token,
         endpoints.getAllRecipes
       )
-      set((state) => ({ ...state, recipes: response, loading: false, errorMessage: null }))
+      set((state) => ({
+        ...state,
+        recipes: response,
+        loading: false,
+        errorMessage: null,
+      }))
     } catch (error) {
-      set({errorMessage: error})
+      set({ errorMessage: 'Failed to load recipes!' })
     } finally {
       set((state) => ({ ...state, loading: false }))
     }

@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native'
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 
 const ShoppingItem: React.FC<Prop> = ({ item, onDelete, index }) => {
@@ -35,9 +30,9 @@ const ShoppingItem: React.FC<Prop> = ({ item, onDelete, index }) => {
             onChangeText={setMeasure}
           />
         </View>
-          <TouchableOpacity onPress={handleDelete}>
-            <FontAwesome name="trash" size={26} color="red" />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={handleDelete}>
+          <FontAwesome name="trash" size={26} color="red" />
+        </TouchableOpacity>
       </View>
       <View style={{ marginBottom: 4 }}></View>
     </View>
@@ -64,7 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   loading: {
     alignItems: 'center',
