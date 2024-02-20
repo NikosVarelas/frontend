@@ -7,7 +7,7 @@ import { endpoints } from '@/constants/endpoint'
 interface ShoppingListStore {
   ingredients: Ingredient[]
   loading: boolean
-  errorMessage: string | undefined
+  errorMessage: string | undefined | null
   fetchShoppingList: (token: string | null | undefined) => Promise<void>
   add: (newRecipe: Recipe, token: string | null) => Promise<void>
   replace: (newIngredinetList: Ingredient[]) => void
@@ -18,7 +18,7 @@ interface ShoppingListStore {
 export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
   ingredients: [],
   loading: false,
-  errorMessage: undefined,
+  errorMessage: null,
   fetchShoppingList: async (token: string | null | undefined) => {
     try {
       set({ loading: true })
@@ -27,9 +27,9 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
         token,
         endpoints.getShoppingList
       )
-      set({ ingredients: response.ingredients })
+      set({ ingredients: response.ingredients, errorMessage: null })
     } catch (error) {
-      throw new Error(error)
+      set({errorMessage: error})
     } finally {
       set({ loading: false })
     }

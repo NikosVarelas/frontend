@@ -2,8 +2,6 @@ import React from 'react'
 import { Redirect } from 'expo-router'
 import { ActivityIndicator, View } from 'react-native'
 import { Provider } from 'react-redux'
-
-import store from '@/store'
 import { useSession } from '@/context/ctx'
 import { Drawer } from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
@@ -24,7 +22,6 @@ export default function AppLayout(): JSX.Element {
   }
 
   return (
-    <Provider store={store}>
       <Drawer>
         <Drawer.Screen
           name="index"
@@ -36,18 +33,6 @@ export default function AppLayout(): JSX.Element {
             headerStyle: {
               backgroundColor: 'green',
             },
-          }}
-        />
-        <Drawer.Screen
-          name="create-recipe"
-          options={{
-            headerTitle: 'Create new recipe',
-            title: 'Create new recipe',
-            headerTintColor: 'black',
-            headerStyle: {
-              backgroundColor: 'green',
-            },
-            drawerIcon: () => <Ionicons name="add" size={20} />,
           }}
         />
         <Drawer.Screen
@@ -82,6 +67,5 @@ export default function AppLayout(): JSX.Element {
           }}
         />
       </Drawer>
-    </Provider>
   )
 }

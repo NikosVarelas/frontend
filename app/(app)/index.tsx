@@ -1,49 +1,43 @@
-import { ActivityIndicator, View } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
-import { type Recipe } from '@/models/Recipe'
-import { useSession } from '@/context/ctx'
-import Carousel from '@/components/carousel'
-import CustomButton from '@/components/CustomButton'
-import React, { useEffect } from 'react'
-import { fetchRecipeData } from '@/store/recipes'
-import { type StoreState } from '@/store'
-import { type Dispatch } from 'redux'
+import { ActivityIndicator, View, Text } from 'react-native'; // Import Text from react-native
+import { useSession } from '@/context/ctx';
+import Carousel from '@/components/carousel';
+import CustomButton from '@/components/CustomButton';
+import React, { useEffect } from 'react';
+import { useRecipeStore } from '@/store/recipeStore';
 
 export default function Index(): JSX.Element {
-  const { signOut, token } = useSession()
-  const data: Recipe[] = useSelector(
-    (state: StoreState) => state.recipes.recipes
-  )
-  const loading: boolean = useSelector(
-    (state: StoreState) => state.recipes.loading
-  )
-  const dispatch: Dispatch<any> = useDispatch()
+  const { signOut, token } = useSession();
+  const data = useRecipeStore((state) => state.recipes);
+  const loading = useRecipeStore((state) => state.loading);
+  const fetchRecipes = useRecipeStore((state) => state.fetchRecipes);
+  const errorMessage = useRecipeStore((state) => state.errorMessage);
 
   useEffect(() => {
-    dispatch(fetchRecipeData(token))
-  }, [dispatch])
+    fetchRecipes(token);
+  }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      {(errorMessage != null) && <Text>Couldn't fetch recipes!</Text>}
       <View
         style={{
           justifyContent: 'center',
           alignItems: 'center',
-          flex: 1
+          flex: 1,
         }}
       >
         {loading ? <ActivityIndicator /> : <Carousel data={data} />}
       </View>
-      <View style={{flex:1}}>
+      <View style={{ flex: 1 }}>
         <CustomButton
           title="Sign Out"
           onPress={() => {
-            signOut()
+            signOut();
           }}
         >
           Sign Out
         </CustomButton>
       </View>
     </View>
-  )
+  );
 }

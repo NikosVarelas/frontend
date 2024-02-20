@@ -12,7 +12,7 @@ import { FlatList } from 'react-native-gesture-handler'
 import ShoppingItem from '@/components/ShoppingItem'
 import { useShoppingListStore } from '@/store/shoppingListStore'
 import { type Ingredient } from '@/models/Recipe'
-import { useNavigation } from 'expo-router'
+import { router, useNavigation } from 'expo-router'
 import AddIngredientForm from '@/components/AddShoppingItem'
 
 export default function Page(): JSX.Element {
@@ -32,6 +32,7 @@ export default function Page(): JSX.Element {
   const handleSave = (ingredientList: Ingredient[]): void => {
     console.log(ingredientList)
     replaceShoppingList(ingredientList)
+    router.push('/page')
   }
 
   useEffect(() => {
