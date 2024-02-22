@@ -9,7 +9,7 @@ let isInitial = true
 
 export default function Page(): JSX.Element {
   const { token } = useSession()
-  const data = useShoppingListStore((state) => state.ingredients)
+  const data = useShoppingListStore((state) => state.shoppingList)
   const loading = useShoppingListStore((state) => state.loading)
   const fetchShoppingList = useShoppingListStore(
     (state) => state.fetchShoppingList
@@ -34,7 +34,9 @@ export default function Page(): JSX.Element {
         <>
           <FlatList
             data={data}
-            renderItem={({ item }) => <ShoppingItem item={item} />}
+            renderItem={({ item }) => (
+              <ShoppingItem item={item.ingredient} index={item.ingredient.id} />
+            )}
             contentContainerStyle={styles.listContainer}
           />
         </>
@@ -43,7 +45,17 @@ export default function Page(): JSX.Element {
   )
 }
 
-const ShoppingItem: React.FC<Prop> = ({ item }) => {
+interface ShoppingItemProp {
+  item: {
+    name: string
+    measure: string
+  }
+  index: number
+}
+
+const ShoppingItem: React.FC<ShoppingItemProp> = ({ item, index }) => {
+  const setItemChecked = useShoppingListStore((state) => state.setItemChecked)
+
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemText}>
@@ -56,26 +68,44 @@ const ShoppingItem: React.FC<Prop> = ({ item }) => {
         unfillColor="#FFFFFF"
         iconStyle={{ borderColor: 'green', borderRadius: 4 }}
         innerIconStyle={{ borderWidth: 2, borderRadius: 4 }}
-        onPress={(isChecked: boolean) => {}}
+        isChecked={item.isChecked}
+        onPress={(isChecked: boolean) => {
+          setItemChecked(index, isChecked)
+        }}
       />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 5,
+    shadowColor: 'grey',
+    shadowOpacity: 0.2,
+    marginBottom: 10
+  },
   listContainer: {
-    marginTop: 10,
+    marginTop: 5,
     borderColor: 'grey',
+    padding: 6,
+    marginBottom: 20,
   },
   itemContainer: {
     backgroundColor: 'white',
     flexDirection: 'row',
     padding: 8,
     alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 10
   },
-  itemName: {},
+  itemName: {
+    fontSize: 18,
+    fontFamily: 'space-mono'
+  },
   itemMeasure: {
-    marginLeft: 10,
+    marginLeft: 5,
+    fontSize: 18,
+    fontFamily: 'space-mono'
   },
   itemText: {
     color: 'white',

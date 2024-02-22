@@ -3,7 +3,7 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  type TouchableOpacityProps
+  type TouchableOpacityProps,
 } from 'react-native'
 
 interface CustomButtonProps extends TouchableOpacityProps {
@@ -31,17 +31,17 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 0,
-    marginBottom: 100,
+    marginBottom: 50,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     marginTop: 10,
     marginLeft: 100,
-    marginRight: 100
-  }
+    marginRight: 100,
+  },
 })
 
 export default CustomButton

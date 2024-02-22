@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { View, TextInput, Text, StyleSheet } from 'react-native'
 import { type Ingredient } from '@/models/Recipe'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { FontAwesome } from '@expo/vector-icons';
+
 
 interface AddIngredientFormProps {
   onAdd: (ingredient: Ingredient) => void
@@ -40,7 +42,7 @@ const AddIngredientForm: React.FC<AddIngredientFormProps> = ({ onAdd }) => {
         onChangeText={setMeasure}
       />
       <TouchableOpacity style={styles.button} onPress={handleAddIngredient}>
-        <Text>Add</Text> 
+      <FontAwesome name="plus-square-o" size={26} color="white" />
       </TouchableOpacity>
     </View>
   )
@@ -51,22 +53,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    marginLeft: 5,
+    marginTop: 10,
+    marginLeft: 5
   },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: 'gray',
     padding: 10,
+    shadowColor: 'gray',
+    shadowOpacity: 0.1,
     marginRight: 10,
     borderRadius: 10,
+    backgroundColor: 'white',
   },
   button: {
     backgroundColor: '#3498db',
     borderRadius: 8,
-    height: 20,
-    width: 30,
-    alignItems: 'center'
+    height: 30,
+    width: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 })
 

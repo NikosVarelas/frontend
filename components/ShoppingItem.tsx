@@ -40,19 +40,21 @@ const ShoppingItem: React.FC<Prop> = ({ item, onDelete, index }) => {
 }
 
 const styles = StyleSheet.create({
-  listContainer: {
-    marginTop: 10,
-    borderColor: 'grey',
-  },
   itemContainer: {
     backgroundColor: 'white',
     flexDirection: 'row',
     padding: 8,
     alignItems: 'center',
+    borderRadius: 15,
+    shadowColor: 'gray',
+    shadowOpacity: 0.2
   },
-  itemName: {},
+  itemName: {
+    fontSize: 18
+  },
   itemMeasure: {
     marginLeft: 10,
+    fontSize: 18
   },
   itemText: {
     color: 'white',

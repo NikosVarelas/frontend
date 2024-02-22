@@ -78,6 +78,7 @@ const putRequest = async (
     const response = await axios.put(url, data, { headers, timeout: 5000 }) // 5 second timeout
     return response.data
   } catch (error) {
+    console.log(error.response.data.detail)
     if (axios.isAxiosError(error) && error.response != null) {
       throw new Error(error.response.data.detail)
     } else {

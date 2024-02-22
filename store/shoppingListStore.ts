@@ -1,22 +1,31 @@
 import { create } from 'zustand'
-import { type Recipe, type Ingredient } from '@/models/Recipe'
+import { type Ingredient } from '@/models/Recipe'
 import { type ShoppingList } from '@/models/ShoppingList'
 import { axiosRequest } from '@/constants/axiosRequest'
 import { endpoints } from '@/constants/endpoint'
 
+export interface ShoppingListIngredient {
+  ingredient: Ingredient
+  isChecked: boolean
+}
+
 interface ShoppingListStore {
-  ingredients: Ingredient[]
+  shoppingList: ShoppingListIngredient[]
   loading: boolean
   errorMessage: string | undefined | null
   fetchShoppingList: (token: string | null | undefined) => Promise<void>
-  add: (newRecipe: Recipe, token: string | null) => Promise<void>
-  replace: (newIngredinetList: Ingredient[]) => void
+  addFromRecipe: (recipeId: number, token: string | null) => Promise<void>
+  replace: (
+    newIngredinetList: ShoppingListIngredient[],
+    token: string | null | undefined
+  ) => Promise<void>
   setLoading: () => void
   deleteItem: (index: number) => void
+  setItemChecked: (index: number, isChecked: boolean) => void
 }
 
 export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
-  ingredients: [],
+  shoppingList: [],
   loading: false,
   errorMessage: null,
   fetchShoppingList: async (token: string | null | undefined) => {
@@ -27,29 +36,29 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
         token,
         endpoints.getShoppingList
       )
-      set({ ingredients: response.ingredients, errorMessage: null })
+      const newShoppingList: ShoppingListIngredient[] =
+        response.ingredients.map((ingredient: Ingredient) => ({
+          ingredient,
+          isChecked: false,
+        }))
+      set({ shoppingList: newShoppingList, errorMessage: null })
     } catch (error) {
-      set({errorMessage: 'Failed to load recipes!'})
+      set({ errorMessage: 'Failed to load recipes!' })
     } finally {
       set({ loading: false })
     }
   },
-  add: async (newRecipe: Recipe, token: string | null) => {
+  addFromRecipe: async (recipeId: number, token: string | null) => {
     set({ loading: true, errorMessage: null })
     try {
       const currentState = get()
-      const newShoppingList: ShoppingList = {
-        ingredients: newRecipe.ingredients,
-      }
 
       let response: ShoppingList
-
-      if (currentState.ingredients.length === 0) {
+      if (currentState.shoppingList.length === 0) {
         response = await axiosRequest(
           'POST',
           token,
-          endpoints.createShoppingList,
-          newShoppingList
+          `${endpoints.createShoppingList}?recipe_id=${recipeId}`
         )
       } else {
         response = await axiosRequest(
@@ -57,27 +66,52 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
           token,
           endpoints.updateShoppingList,
           {
-            ingredients: [
-              ...currentState.ingredients,
-              ...newShoppingList.ingredients,
-            ],
+            ingredients: currentState.shoppingList,
           }
         )
       }
-      set({ ingredients: response.ingredients })
+      set({ shoppingList: response.ingredients })
     } catch (err) {
+      console.log(err)
       set({ errorMessage: 'Failed to add recipe!' })
     } finally {
       set({ loading: false })
     }
   },
-  replace: (newIngredinetList: Ingredient[]) => {
-    set({ingredients: newIngredinetList})
+  replace: async (
+    newIngredinetList: ShoppingListIngredient[],
+    token: string | null | undefined
+  ) => {
+    set({ loading: true, errorMessage: null })
+    try {
+      if (newIngredinetList.length === 0) {
+        await axiosRequest('DELETE', token, endpoints.deleteRecipe)
+      } else {
+        const ingredients: Ingredient[] = newIngredinetList.map((item: ShoppingListIngredient) => item.ingredient);
+        await axiosRequest(
+          'PUT',
+          token,
+          endpoints.updateShoppingList,
+          {ingredients}
+        )
+        set({ shoppingList: newIngredinetList })
+      }
+    } catch (err) {
+        console.log(err)
+      set({ errorMessage: 'Failed saving the edited list' })
+    } finally {
+      set({ loading: false })
+    }
   },
   setLoading: () => {},
   deleteItem: (index: number) => {
-    const ingredients = get().ingredients.slice() 
-    ingredients.splice(index, 1)
-    set({ ingredients })
+    const shoppingList = get().shoppingList.slice()
+    shoppingList.splice(index, 1)
+    set({ shoppingList })
+  },
+  setItemChecked: (index: number, isChecked: boolean) => {
+    const shoppingList = get().shoppingList.slice()
+    shoppingList[index].isChecked = isChecked
+    set({ shoppingList })
   },
 }))

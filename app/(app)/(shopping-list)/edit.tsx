@@ -10,15 +10,15 @@ import {
 import { useSession } from '@/context/ctx'
 import { FlatList } from 'react-native-gesture-handler'
 import ShoppingItem from '@/components/ShoppingItem'
-import { useShoppingListStore } from '@/store/shoppingListStore'
-import { type Ingredient } from '@/models/Recipe'
+import { type ShoppingListIngredient, useShoppingListStore } from '@/store/shoppingListStore'
 import { router, useNavigation } from 'expo-router'
 import AddIngredientForm from '@/components/AddShoppingItem'
+import { type Ingredient } from '@/models/Recipe'
 
 export default function Page(): JSX.Element {
   const { token } = useSession()
-  const data = useShoppingListStore((state) => state.ingredients)
-  const [ingredientList, setIngredientList] = useState<Ingredient[]>(data)
+  const data = useShoppingListStore((state) => state.shoppingList)
+  const [ingredientList, setIngredientList] = useState<ShoppingListIngredient[]>(data)
   const loading = useShoppingListStore((state) => state.loading)
   const replaceShoppingList = useShoppingListStore((state) => state.replace)
   const [listKey, setListKey] = useState(0)
@@ -26,12 +26,15 @@ export default function Page(): JSX.Element {
   const [changed, setChanged] = useState(false)
 
   const handleAddIngredient = (newIngredient: Ingredient): void => {
-    setIngredientList((prevList) => [...prevList, newIngredient])
+    const shoppingListItem = {
+      ingredient: newIngredient,
+      isChecked: false
+    }
+    setIngredientList((prevList) => [...prevList, shoppingListItem])
   }
 
-  const handleSave = (ingredientList: Ingredient[]): void => {
-    console.log(ingredientList)
-    replaceShoppingList(ingredientList)
+  const handleSave = (ingredientList: ShoppingListIngredient[]): void => {
+    void replaceShoppingList(ingredientList, token)
     router.push('/page')
   }
 
@@ -52,7 +55,7 @@ export default function Page(): JSX.Element {
     setChanged(hasChanges)
   }, [ingredientList, data])
 
-  const arraysAreEqual = (arr1: Ingredient[], arr2: Ingredient[]): boolean => {
+  const arraysAreEqual = (arr1: ShoppingListIngredient[], arr2: ShoppingListIngredient[]): boolean => {
     if (arr1.length !== arr2.length) return false
     for (let i = 0; i < arr1.length; i++) {
       if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) return false
@@ -92,12 +95,12 @@ export default function Page(): JSX.Element {
     item,
     index,
   }: {
-    item: Ingredient
+    item: ShoppingListIngredient
     index: number
   }): JSX.Element => (
     <ShoppingItem
-      item={item}
-      index={index}
+      item={item.ingredient}
+      index={item.ingredient.id}
       onDelete={() => {
         handleDelete(index)
       }}
@@ -105,27 +108,14 @@ export default function Page(): JSX.Element {
   )
 
   return (
-    <View style={{ flex: 1 }}>
-      <View style={{ flex: 2 }}>
-        {loading ? (
-          <ActivityIndicator
-            size="large"
-            color="#0000ff"
-            style={styles.loading}
-          />
-        ) : (
-          <>
-            <FlatList
-              key={listKey}
-              data={ingredientList}
-              renderItem={renderItem}
-              contentContainerStyle={styles.listContainer}
-              keyExtractor={(item, index) => index.toString()}
-            />
-          </>
-        )}
-      </View>
-      <View style={{ flex: 1, marginTop: 20 }}>
+    <View style={styles.container}>
+      <View
+        style={{
+          marginTop: 10,
+          borderBottomWidth: 2,
+          borderColor: 'gray'
+        }}
+      >
         <AddIngredientForm onAdd={handleAddIngredient} />
         {changed && (
           <View>
@@ -140,21 +130,53 @@ export default function Page(): JSX.Element {
           </View>
         )}
       </View>
+      <View style={{flex: 1, marginTop: 8}}>
+        {loading ? (
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            style={styles.loading}
+          />
+        ) : (
+          <>
+              <FlatList
+                key={listKey}
+                data={ingredientList}
+                horizontal={false}
+                renderItem={renderItem}
+                contentContainerStyle={styles.listContainer}
+                keyExtractor={(item, index) => index.toString()}
+              />
+          </>
+        )}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 5,
+    flex: 1,
+    shadowColor: 'grey',
+    shadowOpacity: 0.2,
+    marginBottom: 20,
+  },
   listContainer: {
-    marginTop: 10,
+    marginTop: 5,
     borderColor: 'grey',
+    padding: 6,
+    borderRadius: 10,
   },
   itemContainer: {
     flexDirection: 'row',
     padding: 8,
     alignItems: 'center',
+    borderRadius: 10,
   },
-  itemName: {},
+  itemName: {
+    fontSize: 20,
+  },
   itemMeasure: {
     marginLeft: 10,
   },
@@ -173,8 +195,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 25,
     alignItems: 'center',
-    marginTop: 100,
-    marginBottom: 100,
+    marginTop: 10,
+    marginBottom: 10,
     marginLeft: 100,
     marginRight: 100,
   },

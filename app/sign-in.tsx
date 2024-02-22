@@ -67,6 +67,7 @@ export default function SignIn(): JSX.Element {
         <TextInput
           style={styles.TextInput}
           placeholder="Password."
+          autoCapitalize='none'
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
           onChangeText={(password) => {

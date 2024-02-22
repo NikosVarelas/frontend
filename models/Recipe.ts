@@ -1,6 +1,10 @@
 export interface Ingredient {
+  id: number
   name: string
   measure: string
+  processed_name: string | null
+  reciped_id: number | null
+  shopping_list_id: number | null
 }
 
 export interface Recipe {

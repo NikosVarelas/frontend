@@ -37,7 +37,7 @@ const Carousel = (props: {
               </View>
             </TouchableOpacity>
             <View style={styles.itemName}>
-              <Text>
+              <Text style={{fontFamily: 'space-mono'}}>
                 {item.name.length > 20
                   ? `${item.name.slice(0, 20)}...`
                   : item.name}
