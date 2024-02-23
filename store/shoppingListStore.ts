@@ -85,7 +85,8 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
     set({ loading: true, errorMessage: null })
     try {
       if (newIngredinetList.length === 0) {
-        await axiosRequest('DELETE', token, endpoints.deleteRecipe)
+        await axiosRequest('DELETE', token, endpoints.deleteShoppingList)
+        set({shoppingList: []})
       } else {
         const ingredients: Ingredient[] = newIngredinetList.map((item: ShoppingListIngredient) => item.ingredient);
         await axiosRequest(
@@ -109,9 +110,12 @@ export const useShoppingListStore = create<ShoppingListStore>((set, get) => ({
     shoppingList.splice(index, 1)
     set({ shoppingList })
   },
-  setItemChecked: (index: number, isChecked: boolean) => {
+  setItemChecked: (id: number, isChecked: boolean) => {
     const shoppingList = get().shoppingList.slice()
-    shoppingList[index].isChecked = isChecked
-    set({ shoppingList })
+    const index = shoppingList.findIndex(item => item.ingredient.id === id);
+    if (index !== -1) {
+        shoppingList[index].isChecked = isChecked;
+        set({ shoppingList });
+      }
   },
 }))

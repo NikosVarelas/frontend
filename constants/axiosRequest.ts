@@ -17,6 +17,7 @@ const postRequest = async (
     if (axios.isAxiosError(error) && error.response != null) {
       throw new Error(error.response.data.detail)
     } else {
+      console.log(error)
       throw new Error('An error occurred')
     }
   }

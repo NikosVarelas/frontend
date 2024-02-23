@@ -17,7 +17,7 @@ export default function Page(): JSX.Element {
 
   useEffect(() => {
     if (isInitial) {
-      fetchShoppingList(token)
+      void fetchShoppingList(token)
       isInitial = false
     }
   }, [fetchShoppingList, token])
@@ -35,7 +35,7 @@ export default function Page(): JSX.Element {
           <FlatList
             data={data}
             renderItem={({ item }) => (
-              <ShoppingItem item={item.ingredient} index={item.ingredient.id} />
+              <ShoppingItem item={item} index={item.ingredient.id} />
             )}
             contentContainerStyle={styles.listContainer}
           />
@@ -47,20 +47,23 @@ export default function Page(): JSX.Element {
 
 interface ShoppingItemProp {
   item: {
-    name: string
-    measure: string
+    ingredient: {
+      id: number
+      name: string
+      measure: string
+    }
+    isChecked: boolean
   }
-  index: number
 }
 
-const ShoppingItem: React.FC<ShoppingItemProp> = ({ item, index }) => {
+const ShoppingItem: React.FC<ShoppingItemProp> = ({ item }) => {
   const setItemChecked = useShoppingListStore((state) => state.setItemChecked)
 
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemText}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemMeasure}>{item.measure}</Text>
+        <Text style={styles.itemName}>{item.ingredient.name}</Text>
+        <Text style={styles.itemMeasure}>{item.ingredient.measure}</Text>
       </View>
       <BouncyCheckbox
         size={25}
@@ -70,7 +73,7 @@ const ShoppingItem: React.FC<ShoppingItemProp> = ({ item, index }) => {
         innerIconStyle={{ borderWidth: 2, borderRadius: 4 }}
         isChecked={item.isChecked}
         onPress={(isChecked: boolean) => {
-          setItemChecked(index, isChecked)
+          setItemChecked(item.ingredient.id, isChecked)
         }}
       />
     </View>
@@ -82,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 5,
     shadowColor: 'grey',
     shadowOpacity: 0.2,
-    marginBottom: 10
+    marginBottom: 10,
   },
   listContainer: {
     marginTop: 5,
@@ -96,16 +99,16 @@ const styles = StyleSheet.create({
     padding: 8,
     alignItems: 'center',
     borderRadius: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
   itemName: {
     fontSize: 18,
-    fontFamily: 'space-mono'
+    fontFamily: 'space-mono',
   },
   itemMeasure: {
     marginLeft: 5,
     fontSize: 18,
-    fontFamily: 'space-mono'
+    fontFamily: 'space-mono',
   },
   itemText: {
     color: 'white',
