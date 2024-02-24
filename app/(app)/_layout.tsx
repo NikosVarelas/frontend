@@ -1,10 +1,12 @@
 import React from 'react'
 import { Redirect } from 'expo-router'
 import { ActivityIndicator, View } from 'react-native'
-import { Provider } from 'react-redux'
 import { useSession } from '@/context/ctx'
 import { Drawer } from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 export default function AppLayout(): JSX.Element {
   const { isLoading, token } = useSession()
@@ -22,6 +24,7 @@ export default function AppLayout(): JSX.Element {
   }
 
   return (
+    <QueryClientProvider client={queryClient}>
       <Drawer>
         <Drawer.Screen
           name="index"
@@ -67,5 +70,6 @@ export default function AppLayout(): JSX.Element {
           }}
         />
       </Drawer>
+    </QueryClientProvider>
   )
 }

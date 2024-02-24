@@ -1,84 +1,76 @@
-import React, { useEffect } from 'react'
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native'
-import { useSession } from '@/context/ctx'
-import { FlatList } from 'react-native-gesture-handler'
-import BouncyCheckbox from 'react-native-bouncy-checkbox'
-import { useShoppingListStore } from '@/store/shoppingListStore'
-
-let isInitial = true
+import React from 'react';
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { useSession } from '@/context/ctx';
+import { FlatList } from 'react-native-gesture-handler';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { useShoppingListStore } from '@/store/shoppingListStore';
+import { useQuery } from '@tanstack/react-query';
+import { fetchShoppingList } from '@/clients/shopping-list';
+import { type Ingredient } from '@/models/Recipe';
 
 export default function Page(): JSX.Element {
-  const { token } = useSession()
-  const data = useShoppingListStore((state) => state.shoppingList)
-  const loading = useShoppingListStore((state) => state.loading)
-  const fetchShoppingList = useShoppingListStore(
-    (state) => state.fetchShoppingList
-  )
+  const { token } = useSession();
+  const query = useQuery({
+    queryKey: ['fetchShoppingList', token],
+    queryFn: async () => await fetchShoppingList(token),
+  });
 
-  useEffect(() => {
-    if (isInitial) {
-      void fetchShoppingList(token)
-      isInitial = false
-    }
-  }, [fetchShoppingList, token])
+  // Accessing checkedItems state from the store
+  const checkedItems = useShoppingListStore((state) => state.checkedItems);
+  const setItemChecked = useShoppingListStore((state) => state.setItemChecked);
+
+  const handleToggleItem = (id: number, isChecked: boolean): void => {
+    setItemChecked(id, isChecked);
+  };
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color="#0000ff"
-          style={styles.loading}
-        />
+      {query.isLoading as boolean ? (
+        <ActivityIndicator size="large" style={styles.loading} />
       ) : (
-        <>
-          <FlatList
-            data={data}
-            renderItem={({ item }) => (
-              <ShoppingItem item={item} index={item.ingredient.id} />
-            )}
-            contentContainerStyle={styles.listContainer}
-          />
-        </>
+        <FlatList
+          data={query.data?.ingredients ?? []}
+          renderItem={({ item }) => (
+            <ShoppingItem
+              item={item}
+              isChecked={checkedItems.some((checkedItem) => checkedItem.id === item.id)}
+              onToggleItem={handleToggleItem}
+            />
+          )}
+          contentContainerStyle={styles.listContainer}
+          keyExtractor={(item) => item.id.toString()}
+        />
       )}
     </View>
-  )
+  );
 }
 
-interface ShoppingItemProp {
-  item: {
-    ingredient: {
-      id: number
-      name: string
-      measure: string
-    }
-    isChecked: boolean
-  }
+interface ShoppingItemProps {
+  item: Ingredient;
+  isChecked: boolean;
+  onToggleItem: (id: number, isChecked: boolean) => void;
 }
 
-const ShoppingItem: React.FC<ShoppingItemProp> = ({ item }) => {
-  const setItemChecked = useShoppingListStore((state) => state.setItemChecked)
-
+const ShoppingItem: React.FC<ShoppingItemProps> = ({ item, isChecked, onToggleItem }) => {
   return (
     <View style={styles.itemContainer}>
       <View style={styles.itemText}>
-        <Text style={styles.itemName}>{item.ingredient.name}</Text>
-        <Text style={styles.itemMeasure}>{item.ingredient.measure}</Text>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemMeasure}>{item.measure}</Text>
       </View>
+
       <BouncyCheckbox
         size={25}
         fillColor="green"
         unfillColor="#FFFFFF"
         iconStyle={{ borderColor: 'green', borderRadius: 4 }}
         innerIconStyle={{ borderWidth: 2, borderRadius: 4 }}
-        isChecked={item.isChecked}
-        onPress={(isChecked: boolean) => {
-          setItemChecked(item.ingredient.id, isChecked)
-        }}
+        isChecked={isChecked}
+        onPress={(isChecked: boolean) => { onToggleItem(item.id, isChecked); }}
       />
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -86,6 +78,8 @@ const styles = StyleSheet.create({
     shadowColor: 'grey',
     shadowOpacity: 0.2,
     marginBottom: 10,
+    flex: 1,
+    justifyContent: 'center',
   },
   listContainer: {
     marginTop: 5,
@@ -120,4 +114,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-})
+});

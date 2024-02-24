@@ -1,24 +1,31 @@
-import { ActivityIndicator, View, Text } from 'react-native' // Import Text from react-native
+import { ActivityIndicator, View, Text } from 'react-native'
 import { useSession } from '@/context/ctx'
 import Carousel from '@/components/carousel'
 import CustomButton from '@/components/CustomButton'
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { fetchRecipes } from '@/clients/recipe'
 import { useRecipeStore } from '@/store/recipeStore'
+import { type Recipe } from '@/models/Recipe'
 
 export default function Index(): JSX.Element {
   const { signOut, token } = useSession()
-  const data = useRecipeStore((state) => state.recipes)
-  const loading = useRecipeStore((state) => state.loading)
-  const fetchRecipes = useRecipeStore((state) => state.fetchRecipes)
-  const errorMessage = useRecipeStore((state) => state.errorMessage)
+  const replaceRecipes = useRecipeStore((state) => state.replace)
 
-  useEffect(() => {
-    fetchRecipes(token)
-  }, [])
+  const query = useQuery({
+    queryKey: ['fetchRecipes', token],
+    queryFn: async () => await fetchRecipes(token),
+  })
+
+  if (query.isSuccess as boolean) {
+    if (query.data.length > 0) {
+      replaceRecipes(query.data as Recipe[])
+    }
+  }
 
   return (
     <View style={{ alignItems: 'center', flex: 1 }}>
-      {errorMessage != null && <Text>Couldn't fetch recipes!</Text>}
+      {query.error != null && <Text>Could not fetch recipes!</Text>}
       <View
         style={{
           justifyContent: 'center',
@@ -26,7 +33,11 @@ export default function Index(): JSX.Element {
           flex: 1,
         }}
       >
-        {loading ? <ActivityIndicator /> : <Carousel data={data} />}
+        {(query.isLoading as boolean) ? (
+          <ActivityIndicator />
+        ) : (
+          <Carousel data={query.data} />
+        )}
       </View>
       <View style={{}}>
         <CustomButton

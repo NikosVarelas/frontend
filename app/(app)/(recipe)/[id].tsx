@@ -14,6 +14,8 @@ import { FontAwesome } from '@expo/vector-icons'
 import { useShoppingListStore } from '@/store/shoppingListStore'
 import { useRecipeStore } from '@/store/recipeStore'
 import { ScrollView } from 'react-native-gesture-handler'
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query'
+import { addRecipeToSL } from '@/clients/shopping-list'
 
 const Page = (): JSX.Element => {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -21,15 +23,25 @@ const Page = (): JSX.Element => {
   const { token } = useSession()
   const shoppingListAdd = useShoppingListStore((state) => state.addFromRecipe)
   const recipes = useRecipeStore((state) => state.recipes)
+  const queryClient = useQueryClient()
+  const [error, setError] = React.useState<string | null>(null)
 
-  const recipeData: Recipe | undefined = recipes.find((recipe) => recipe.id === recipeId)
+  const recipeData: Recipe | undefined = recipes.find(
+    (recipe) => recipe.id === recipeId
+  )
+  const { mutate } = useMutation({
+    mutationFn: async () => await addRecipeToSL(token, recipeId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['fetchShoppingList', token],
+      })
 
-  const handleAddtoBasket = async (): Promise<void> => {
-    if (recipeData != null) {
-      await shoppingListAdd(recipeId, token)
       router.push('/(app)')
-    }
-  }
+    },
+    onError: () => {
+      setError('Could not add recipe to shopping list')
+    },
+  })
 
   return (
     <View style={styles.container}>
@@ -40,7 +52,7 @@ const Page = (): JSX.Element => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          handleAddtoBasket()
+          mutate(token, recipeId)
         }}
       >
         <FontAwesome

@@ -10,37 +10,69 @@ import {
 import { useSession } from '@/context/ctx'
 import { FlatList } from 'react-native-gesture-handler'
 import ShoppingItem from '@/components/ShoppingItem'
-import { type ShoppingListIngredient, useShoppingListStore } from '@/store/shoppingListStore'
+import { useShoppingListStore } from '@/store/shoppingListStore'
 import { router, useNavigation } from 'expo-router'
 import AddIngredientForm from '@/components/AddShoppingItem'
 import { type Ingredient } from '@/models/Recipe'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  deleteShoppingList,
+  updateShoppingList,
+} from '@/clients/shopping-list'
+import { type ShoppingList } from '@/models/ShoppingList'
 
 export default function Page(): JSX.Element {
   const { token } = useSession()
-  const data = useShoppingListStore((state) => state.shoppingList)
-  const [ingredientList, setIngredientList] = useState<ShoppingListIngredient[]>(data)
   const loading = useShoppingListStore((state) => state.loading)
-  const replaceShoppingList = useShoppingListStore((state) => state.replace)
   const [listKey, setListKey] = useState(0)
   const navigation = useNavigation()
   const [changed, setChanged] = useState(false)
+  const queryClient = useQueryClient()
+  const data: ShoppingList | undefined = queryClient.getQueryData(['fetchShoppingList', token])
+  const [ingredientList, setIngredientList] = useState<Ingredient[]>(
+    data?.ingredients ?? []
+  )
+
+  const updateMutation = useMutation({
+    mutationFn: async (ingredientList: Ingredient[]) => {
+      let data
+      if (ingredientList.length > 0) {
+        data = await updateShoppingList(token, ingredientList)
+      } else {
+        await deleteShoppingList(token)
+        data = {
+          ingredients: [],
+        }
+      }
+      return data
+    },
+    onSuccess: (data) => {
+      console.log('data', data)
+      queryClient.setQueryData(['fetchShoppingList', token], data)
+      router.push('/page')
+    },
+    onError: () => {
+      Alert.alert('Could not save shopping list')
+    },
+  })
 
   const handleAddIngredient = (newIngredient: Ingredient): void => {
-    const shoppingListItem = {
-      ingredient: newIngredient,
-      isChecked: false
-    }
-    setIngredientList((prevList) => [...prevList, shoppingListItem])
-  }
-
-  const handleSave = (ingredientList: ShoppingListIngredient[]): void => {
-    void replaceShoppingList(ingredientList, token)
-    router.push('/page')
+    setIngredientList((prevList: Ingredient[] | undefined) => {
+      if (prevList != null) {
+        return [...prevList, newIngredient];
+      } else {
+        return [newIngredient];
+      }
+    });
   }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      const hasChanges = !arraysAreEqual(ingredientList, data)
+      console.log('here')
+      const hasChanges = !arraysAreEqual(
+        ingredientList,
+        data?.ingredients ?? [] as Ingredient[]
+      )
       if (hasChanges) {
         e.preventDefault()
         showAlert(e.data.action)
@@ -48,14 +80,17 @@ export default function Page(): JSX.Element {
     })
 
     return unsubscribe
-  }, [ingredientList, data])
+  }, [ingredientList, data?.ingredients ?? []])
 
   useEffect(() => {
-    const hasChanges = !arraysAreEqual(ingredientList, data)
+    const hasChanges = !arraysAreEqual(
+      ingredientList,
+      data?.ingredients ?? [] as Ingredient[]
+    )
     setChanged(hasChanges)
-  }, [ingredientList, data])
+  }, [ingredientList, data?.ingredients ?? []])
 
-  const arraysAreEqual = (arr1: ShoppingListIngredient[], arr2: ShoppingListIngredient[]): boolean => {
+  const arraysAreEqual = (arr1: Ingredient[], arr2: Ingredient[]): boolean => {
     if (arr1.length !== arr2.length) return false
     for (let i = 0; i < arr1.length; i++) {
       if (JSON.stringify(arr1[i]) !== JSON.stringify(arr2[i])) return false
@@ -63,7 +98,7 @@ export default function Page(): JSX.Element {
     return true
   }
 
-  const showAlert = (action: any): void => {
+  const showAlert = (action: string): void => {
     Alert.alert(
       'Unsaved Changes',
       'You have unsaved changes. Are you sure you want to go back?',
@@ -95,12 +130,12 @@ export default function Page(): JSX.Element {
     item,
     index,
   }: {
-    item: ShoppingListIngredient
+    item: Ingredient
     index: number
   }): JSX.Element => (
     <ShoppingItem
-      item={item.ingredient}
-      index={item.ingredient.id}
+      item={item}
+      index={item.id}
       onDelete={() => {
         handleDelete(index)
       }}
@@ -113,7 +148,7 @@ export default function Page(): JSX.Element {
         style={{
           marginTop: 10,
           borderBottomWidth: 2,
-          borderColor: 'gray'
+          borderColor: 'gray',
         }}
       >
         <AddIngredientForm onAdd={handleAddIngredient} />
@@ -122,7 +157,7 @@ export default function Page(): JSX.Element {
             <TouchableOpacity
               style={styles.saveButton}
               onPress={() => {
-                handleSave(ingredientList)
+                updateMutation.mutate(ingredientList)
               }}
             >
               <Text style={styles.saveButtonText}>Save</Text>
@@ -130,7 +165,7 @@ export default function Page(): JSX.Element {
           </View>
         )}
       </View>
-      <View style={{flex: 1, marginTop: 8}}>
+      <View style={{ flex: 1, marginTop: 8 }}>
         {loading ? (
           <ActivityIndicator
             size="large"
@@ -139,14 +174,14 @@ export default function Page(): JSX.Element {
           />
         ) : (
           <>
-              <FlatList
-                key={listKey}
-                data={ingredientList}
-                horizontal={false}
-                renderItem={renderItem}
-                contentContainerStyle={styles.listContainer}
-                keyExtractor={(item, index) => index.toString()}
-              />
+            <FlatList
+              key={listKey}
+              data={ingredientList}
+              horizontal={false}
+              renderItem={renderItem}
+              contentContainerStyle={styles.listContainer}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </>
         )}
       </View>
