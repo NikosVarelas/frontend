@@ -47,7 +47,6 @@ export default function Page(): JSX.Element {
       return data
     },
     onSuccess: (data) => {
-      console.log('data', data)
       queryClient.setQueryData(['fetchShoppingList', token], data)
       router.push('/page')
     },
@@ -68,7 +67,6 @@ export default function Page(): JSX.Element {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      console.log('here')
       const hasChanges = !arraysAreEqual(
         ingredientList,
         data?.ingredients ?? [] as Ingredient[]
