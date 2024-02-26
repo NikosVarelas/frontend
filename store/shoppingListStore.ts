@@ -1,19 +1,18 @@
 import { create } from 'zustand'
 import { type Ingredient } from '@/models/Recipe'
 import { type ShoppingList } from '@/models/ShoppingList'
-import { axiosRequest } from '@/constants/axiosRequest'
-import { endpoints } from '@/constants/endpoint'
 
 export interface ShoppingListIngredient {
   ingredient: Ingredient
 }
 
 interface ItemChecked {
-    id: number
-    checked: boolean
+  id: number
+  checked: boolean
 }
 
 interface ShoppingListStore {
+  ingredients: ShoppingListIngredient[]
   loading: boolean
   errorMessage: string | undefined | null
   setItemChecked: (index: number, isChecked: boolean) => void

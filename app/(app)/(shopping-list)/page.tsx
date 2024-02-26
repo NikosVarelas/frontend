@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ActivityIndicator, StyleSheet, Text } from 'react-native'
+import { View, ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { useSession } from '@/context/ctx'
 import { FlatList } from 'react-native-gesture-handler'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
@@ -7,12 +7,14 @@ import { useShoppingListStore } from '@/store/shoppingListStore'
 import { useQuery } from '@tanstack/react-query'
 import { fetchShoppingList } from '@/clients/shopping-list'
 import { type Ingredient } from '@/models/Recipe'
+import { Feather } from '@expo/vector-icons'
+import { router } from 'expo-router'
 
 export default function Page(): JSX.Element {
   const { token } = useSession()
   const query = useQuery({
     queryKey: ['fetchShoppingList', token],
-    queryFn: async () => await fetchShoppingList(token),
+    queryFn: async () => await fetchShoppingList(token)
   })
 
   // Accessing checkedItems state from the store
@@ -60,11 +62,6 @@ const ShoppingItem: React.FC<ShoppingItemProps> = ({
 }) => {
   return (
     <View style={styles.itemContainer}>
-      <View style={styles.itemText}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemMeasure}>{item.measure}</Text>
-      </View>
-
       <BouncyCheckbox
         size={25}
         fillColor="green"
@@ -76,6 +73,18 @@ const ShoppingItem: React.FC<ShoppingItemProps> = ({
           onToggleItem(item.id, isChecked)
         }}
       />
+      <View style={styles.itemText}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemMeasure}>{item.measure}</Text>
+      </View>
+      <View>
+      <TouchableOpacity onPress={() => { router.push({
+        pathname: '/modal',
+        params: { itemId: item.id }
+      }); }}>
+          <Feather name="edit" size={26} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }

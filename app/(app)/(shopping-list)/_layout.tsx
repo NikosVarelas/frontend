@@ -1,6 +1,6 @@
 import React from 'react'
 import { Pressable } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, Fontisto } from '@expo/vector-icons'
 import { Stack, router } from 'expo-router'
 
 const Layout = (): JSX.Element => {
@@ -18,10 +18,10 @@ const Layout = (): JSX.Element => {
           headerRight: () => (
             <Pressable
               onPress={() => {
-                router.push('/edit')
+                router.push('/modal')
               }}
             >
-              <Ionicons name="pencil" size={26} style={{ marginRight: 20 }} />
+              <Fontisto name="shopping-basket-add" size={26} color="black" />
             </Pressable>
           ),
           headerLeft: () => (
@@ -36,24 +36,15 @@ const Layout = (): JSX.Element => {
         }}
       />
       <Stack.Screen
-        name="edit"
+        name="modal"
         options={{
-          title: 'Edit',
+          title: 'Modal',
+          presentation: 'modal',
           headerStyle: {
             backgroundColor: 'green',
           },
-          headerBackButtonMenuEnabled: false,
-          headerLeft: () => (
-            <Pressable
-              onPress={() => {
-                router.back()
-              }}
-            >
-              <Ionicons name="chevron-back" size={26} style={{ marginRight: 20 }} />
-            </Pressable>
-          ),
         }}
-      />
+        />
     </Stack>
   )
 }
