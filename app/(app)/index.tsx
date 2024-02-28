@@ -13,8 +13,9 @@ export default function Index(): JSX.Element {
   const replaceRecipes = useRecipeStore((state) => state.replace)
 
   const query = useQuery({
-    queryKey: ['fetchRecipes', token],
+    queryKey: ['fetchRecipes'],
     queryFn: async () => await fetchRecipes(token),
+    refetchOnMount: false,
   })
 
   if (query.isSuccess as boolean) {

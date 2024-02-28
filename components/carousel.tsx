@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { router } from 'expo-router'
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace'
+import { Ionicons } from '@expo/vector-icons'
 
 const Carousel = (props: {
   data: ArrayLike<any> | null | undefined
@@ -30,14 +31,16 @@ const Carousel = (props: {
               }}
             >
               <View style={styles.item}>
-                <Image
-                  source={{ uri: item.image_url }}
-                  style={styles.image}
-                />
+                <Image source={{ uri: item.image_url }} style={styles.image} />
+                <TouchableOpacity
+                  style={{ position: 'absolute', right: 15, top: 15 }}
+                >
+                  <Ionicons name="heart-outline" size={26} color="white" />
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
             <View style={styles.itemName}>
-              <Text style={{fontFamily: 'space-mono'}}>
+              <Text style={{ fontFamily: 'space-mono' }}>
                 {item.name.length > 20
                   ? `${item.name.slice(0, 20)}...`
                   : item.name}

@@ -1,52 +1,41 @@
-import React from 'react'
-import { Pressable } from 'react-native'
-import { Ionicons, Fontisto } from '@expo/vector-icons'
 import { Stack, router } from 'expo-router'
+import React from 'react'
+import { Fontisto } from '@expo/vector-icons'
 
-const Layout = (): JSX.Element => {
-  
+export default function Layout(): JSX.Element {
   return (
     <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="page"
+        name="settings-modal"
         options={{
-          headerShown: true,
-          headerTitle: 'Shopping List',
-          headerStyle: {
-            backgroundColor: 'green',
-          },
-          headerRight: () => (
-            <Pressable
-              onPress={() => {
-                router.push('/modal')
-              }}
-            >
-              <Fontisto name="shopping-basket-add" size={26} color="black" />
-            </Pressable>
-          ),
+          presentation: 'modal',
+          headerTitle: 'Settings',
           headerLeft: () => (
-            <Pressable
-              onPress={() => {
-                router.push('/(app)')
-              }}
-            >
-              <Ionicons name="home" size={26} style={{ marginRight: 20 }} />
-            </Pressable>
+            <Fontisto
+              name="close-a"
+              size={22}
+              color="green"
+              onPress={() => { router.back(); }}
+            />
           ),
         }}
       />
       <Stack.Screen
-        name="modal"
+        name="edit-modal"
         options={{
-          title: 'Modal',
+          headerTitle: 'Edit',
           presentation: 'modal',
-          headerStyle: {
-            backgroundColor: 'green',
-          },
+          headerLeft: () => (
+            <Fontisto
+              name="close-a"
+              size={22}
+              color="green"
+              onPress={() => { router.back(); }}
+            />
+          ),
         }}
-        />
+      />
     </Stack>
   )
 }
-
-export default Layout

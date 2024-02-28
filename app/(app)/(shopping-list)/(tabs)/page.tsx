@@ -15,14 +15,13 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchShoppingList } from '@/clients/shopping-list'
 import { type Ingredient } from '@/models/Recipe'
 import { Feather, Ionicons } from '@expo/vector-icons'
-import { Link, router } from 'expo-router'
+import { router } from 'expo-router'
 
 export default function Page(): JSX.Element {
   const { token } = useSession()
   const query = useQuery({
     queryKey: ['fetchShoppingList'],
     queryFn: async () => await fetchShoppingList(token),
-    refetchOnMount: false,
   })
 
   // Accessing checkedItems state from the store
@@ -35,18 +34,6 @@ export default function Page(): JSX.Element {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.homeButton}
-          onPress={() => {
-            router.push('/(app)')
-          }}
-        >
-          <Ionicons name="home" size={26} />
-        </TouchableOpacity>
-
-        <Feather name="settings" size={26} color="black" />
-      </View>
       {(query.isLoading as boolean) ? (
         <ActivityIndicator size="large" style={styles.loading} />
       ) : (
@@ -100,7 +87,10 @@ const ShoppingItem: React.FC<ShoppingItemProps> = ({
       <View>
         <TouchableOpacity
           onPress={() => {
-            router.push('/(app)/(shopping-list)/(modal)/edit-ingredient')
+            router.push({
+                pathname: '/edit-modal',
+                params: { itemId: item.id }
+              });
           }}
         >
           <Feather name="edit" size={26} color="black" />

@@ -33,3 +33,15 @@ export const deleteShoppingList = async (
 ): Promise<void> => {
   return await axiosRequest('DELETE', token, endpoints.deleteShoppingList)
 }
+
+export const updateIngredient = async (
+    token: string | null | undefined,
+    ingredientId: number,
+    isChecked: boolean
+    ): Promise<ShoppingList> => {
+    return await axiosRequest(
+        'PUT',
+        token,
+        `${endpoints.updateIngredient}?ingredient_id=${ingredientId}`
+    )
+    }

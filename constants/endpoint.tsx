@@ -9,4 +9,6 @@ export const endpoints = {
   updateShoppingList: 'http://localhost:8000/v1/sl/update',
   addRecipeToSL: 'http://localhost:8000/v1/sl/add-recipe',
   deleteShoppingList: 'http://localhost:8000/v1/sl/delete',
+  updateIngredient: 'http://localhost:8000/v1/sl/update-ingredient',
+  deleteIngredient: 'http://localhost:8000/v1/sl/delete-ingredient',
 }

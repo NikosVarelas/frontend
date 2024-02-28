@@ -3,7 +3,7 @@ export interface Ingredient {
   name: string
   measure: string
   processed_name: string | null
-  reciped_id: number | null
+  recipe_id: number | null
   shopping_list_id: number | null
 }
 

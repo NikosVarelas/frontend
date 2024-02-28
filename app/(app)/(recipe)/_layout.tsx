@@ -1,10 +1,12 @@
 import React from 'react'
 import { Stack, router } from 'expo-router'
-import { Pressable } from 'react-native'
+import { Pressable, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import Toast from 'react-native-toast-message';
 
 const Layout = (): JSX.Element => {
   return (
+    <>
     <Stack>
       <Stack.Screen
         name="[id]"
@@ -20,13 +22,13 @@ const Layout = (): JSX.Element => {
             </Pressable>
           ),
           headerRight: () => (
-            <Pressable
+            <TouchableOpacity style={{ marginRight: 15 }}
               onPress={() => {
                 router.back()
               }}
             >
-              <Ionicons name="heart" size={26} />
-            </Pressable>
+              <Ionicons name="heart-outline" size={26} color='white'/>
+            </TouchableOpacity>
           ),
           headerStyle: {
             backgroundColor: 'green',
@@ -35,6 +37,8 @@ const Layout = (): JSX.Element => {
         }}
       ></Stack.Screen>
     </Stack>
+    <Toast />
+    </>
   )
 }
 

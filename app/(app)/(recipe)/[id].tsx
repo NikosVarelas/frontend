@@ -15,6 +15,7 @@ import { useRecipeStore } from '@/store/recipeStore'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addRecipeToSL } from '@/clients/shopping-list'
+import Toast from 'react-native-toast-message'
 
 const Page = (): JSX.Element => {
   const { id } = useLocalSearchParams<{ id: string }>()
@@ -23,6 +24,26 @@ const Page = (): JSX.Element => {
   const recipes = useRecipeStore((state) => state.recipes)
   const queryClient = useQueryClient()
   const [error, setError] = React.useState<string | null>(null)
+  const errorToast = (error: string | null): void => {
+    Toast.show({
+      type: 'error',
+      text1: 'Could not add recipe to shopping list',
+      text2: error ?? 'An error occurred',
+      position: 'top',
+      visibilityTime: 3000,
+      topOffset: 60,
+    })
+  }
+
+  const successToast = (): void => {
+    Toast.show({
+      type: 'success',
+      text1: 'Recipe added to shopping list',
+      position: 'top',
+      visibilityTime: 3000,
+      topOffset: 60,
+    })
+  }
 
   const recipeData: Recipe | undefined = recipes.find(
     (recipe) => recipe.id === recipeId
@@ -31,14 +52,14 @@ const Page = (): JSX.Element => {
     mutationFn: async () => await addRecipeToSL(token, recipeId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['fetchShoppingList', token],
+        queryKey: ['fetchShoppingList'],
       })
+      successToast()
       router.push('/(app)')
     },
-    onError: () => {
-      setError('Could not add recipe to shopping list')
-    }
-
+    onError: (error: any) => {
+      errorToast(error.message)
+    },
   })
 
   return (
@@ -49,7 +70,9 @@ const Page = (): JSX.Element => {
       </ScrollView>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => { mutate(token, recipeId) }}
+        onPress={() => {
+          mutate(token, recipeId)
+        }}
       >
         <FontAwesome
           name="shopping-basket"
