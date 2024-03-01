@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native'
 import { useSession } from '@/context/ctx'
 import { FlatList } from 'react-native-gesture-handler'
@@ -14,8 +13,9 @@ import { useShoppingListStore } from '@/store/shoppingListStore'
 import { useQuery } from '@tanstack/react-query'
 import { fetchShoppingList } from '@/clients/shopping-list'
 import { type Ingredient } from '@/models/Recipe'
-import { Feather, Ionicons } from '@expo/vector-icons'
+import { Feather } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import Colors from '@/constants/Colors'
 
 export default function Page(): JSX.Element {
   const { token } = useSession()
@@ -71,9 +71,9 @@ const ShoppingItem: React.FC<ShoppingItemProps> = ({
     <View style={styles.itemContainer}>
       <BouncyCheckbox
         size={25}
-        fillColor="green"
+        fillColor={Colors.primary}
         unfillColor="#FFFFFF"
-        iconStyle={{ borderColor: 'green', borderRadius: 4 }}
+        iconStyle={{ borderColor: Colors.primary, borderRadius: 4 }}
         innerIconStyle={{ borderWidth: 2, borderRadius: 4 }}
         isChecked={isChecked}
         onPress={(isChecked: boolean) => {
@@ -88,9 +88,9 @@ const ShoppingItem: React.FC<ShoppingItemProps> = ({
         <TouchableOpacity
           onPress={() => {
             router.push({
-                pathname: '/edit-modal',
-                params: { itemId: item.id }
-              });
+              pathname: '/edit-modal',
+              params: { itemId: item.id },
+            })
           }}
         >
           <Feather name="edit" size={26} color="black" />
@@ -109,19 +109,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    shadowColor: 'black',
-    shadowOpacity: 0.2,
-    marginBottom: 10,
-    height: Dimensions.get('window').height * 0.1,
-    backgroundColor: 'green',
-  },
   homeButton: {
-    padding: 10
+    padding: 10,
   },
   listContainer: {
     marginTop: 5,

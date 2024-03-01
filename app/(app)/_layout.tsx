@@ -5,7 +5,7 @@ import { useSession } from '@/context/ctx'
 import { Drawer } from 'expo-router/drawer'
 import { Ionicons } from '@expo/vector-icons'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { primaryColor } from '@/assets/colors'
+import Colors from '@/constants/Colors'
 import Toast from 'react-native-toast-message'
 
 const queryClient = new QueryClient()
@@ -37,7 +37,7 @@ export default function AppLayout(): JSX.Element {
               title: 'Home',
               headerTintColor: 'black',
               headerStyle: {
-                backgroundColor: primaryColor,
+                backgroundColor: Colors.primary,
               },
             }}
           />
@@ -60,7 +60,7 @@ export default function AppLayout(): JSX.Element {
               headerShown: false,
               headerTintColor: 'black',
               headerStyle: {
-                backgroundColor: 'green',
+                backgroundColor: Colors.primary,
               },
             }}
           />

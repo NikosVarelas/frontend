@@ -1,6 +1,6 @@
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-import { Link, Tabs } from 'expo-router'
+import { Link, Tabs, router } from 'expo-router'
 import { Pressable } from 'react-native'
 import {
   Feather,
@@ -9,6 +9,7 @@ import {
   AntDesign,
   MaterialCommunityIcons,
 } from '@expo/vector-icons'
+import Colors from '@/constants/Colors'
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name']
@@ -25,7 +26,7 @@ export default function TabLayout(): JSX.Element {
         options={{
           title: 'Shopping List',
           headerStyle: {
-            backgroundColor: 'green',
+            backgroundColor: Colors.primary,
           },
           headerTintColor: 'black',
           tabBarIcon: ({ color }) => (
@@ -61,8 +62,9 @@ export default function TabLayout(): JSX.Element {
         name="new-item"
         options={{
           title: 'Add Item',
+          href: '(shopping-list)/edit-modal',
           headerStyle: {
-            backgroundColor: 'green',
+            backgroundColor: Colors.primary,
           },
           headerTintColor: 'black',
           tabBarIcon: ({ color }) => (
@@ -93,13 +95,19 @@ export default function TabLayout(): JSX.Element {
             </Link>
           ),
         }}
+        listeners={() => ({
+          tabPress: (e) => {
+            e.preventDefault()
+            router.push('/(app)/(shopping-list)/edit-modal')
+          },
+        })}
       />
       <Tabs.Screen
         name="recipes"
         options={{
-          title: 'Recipes in Shopping List',
+          title: 'Recipes',
           headerStyle: {
-            backgroundColor: 'green',
+            backgroundColor: Colors.primary,
           },
           headerTintColor: 'black',
           tabBarIcon: ({ color }) => (

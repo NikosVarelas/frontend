@@ -1,6 +1,7 @@
 import { Stack, router } from 'expo-router'
 import React from 'react'
-import { Fontisto } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
+import Colors from '@/constants/Colors'
 
 export default function Layout(): JSX.Element {
   return (
@@ -11,12 +12,18 @@ export default function Layout(): JSX.Element {
         options={{
           presentation: 'modal',
           headerTitle: 'Settings',
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: Colors.lightGrey,
+          },
           headerLeft: () => (
-            <Fontisto
-              name="close-a"
-              size={22}
-              color="green"
-              onPress={() => { router.back(); }}
+            <Ionicons
+              name="close-outline"
+              size={28}
+              color={Colors.primary}
+              onPress={() => {
+                router.back()
+              }}
             />
           ),
         }}
@@ -26,12 +33,18 @@ export default function Layout(): JSX.Element {
         options={{
           headerTitle: 'Edit',
           presentation: 'modal',
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: Colors.lightGrey,
+          },
           headerLeft: () => (
-            <Fontisto
-              name="close-a"
-              size={22}
-              color="green"
-              onPress={() => { router.back(); }}
+            <Ionicons
+              name="close-outline"
+              size={28}
+              color={Colors.primary}
+              onPress={() => {
+                router.back()
+              }}
             />
           ),
         }}

@@ -1,9 +1,7 @@
 // AddIngredientForm.tsx
 
 import React, { useState } from 'react'
-import { View, TextInput, StyleSheet, Text, Dimensions } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import { EvilIcons } from '@expo/vector-icons'
+import { View, TextInput, StyleSheet, Dimensions } from 'react-native'
 import { useSession } from '@/context/ctx'
 import { useQuery } from '@tanstack/react-query'
 import { fetchShoppingList } from '@/clients/shopping-list'
@@ -45,20 +43,6 @@ const EditShoppingItem: React.FC<EditShoppingItemFormProps> = ({
         value={measureName}
         onChangeText={setMeasure}
       />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => { console.log('pressed'); }}
-        >
-          <Text>Save</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.trashButton}
-          onPress={() => { console.log('pressed'); }}
-        >
-          <EvilIcons name="trash" size={28} color="black" />
-        </TouchableOpacity>
       </View>
     </View>
   )

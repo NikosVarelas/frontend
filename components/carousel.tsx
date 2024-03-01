@@ -8,7 +8,6 @@ import {
   Image,
 } from 'react-native'
 import { router } from 'expo-router'
-import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace'
 import { Ionicons } from '@expo/vector-icons'
 
 const Carousel = (props: {
